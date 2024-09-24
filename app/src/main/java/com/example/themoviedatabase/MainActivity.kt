@@ -3,18 +3,20 @@ package com.example.themoviedatabase
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import com.example.themoviedatabase.ui.MainViewModel
 import com.example.themoviedatabase.ui.MainScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val myViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        val mainViewModel: MainViewModel by viewModels()
 
 
-        setContent { MainScreen(mainViewModel = myViewModel) }
+        setContent { MainScreen(mainViewModel = mainViewModel) }
     }
 
 }
