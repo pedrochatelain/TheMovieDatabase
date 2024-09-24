@@ -3,37 +3,45 @@ package com.example.themoviedatabase
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.themoviedatabase.databinding.MainLayoutBinding
-import com.example.themoviedatabase.ui.theme.TheMovieDatabaseTheme
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var binding: MainLayoutBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var number_of_taps: Int = 0;
-
-
-        binding = MainLayoutBinding.inflate(layoutInflater)
-        val view = binding.root
-        binding.buttonTap.setOnClickListener {
-            number_of_taps++
-            binding.textCounterTap.text = "You've tapped the button $number_of_taps times"
-        }
-
-        setContentView(view)
-
-//        setContentView(R.layout.main_layout)
-
-
+        setContent { MainPage() }
     }
+
+    @Preview
+    @Composable
+    fun MainPage() {
+
+        val counter = remember { mutableIntStateOf(0) }
+
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(fontSize = TextUnit(22F, TextUnitType.Sp), text = "Taps on button: " + counter.intValue)
+            Spacer(Modifier.height(height = Dp(10F)))
+            Button(onClick = { counter.intValue++ }) {
+                Text("Tap me!")
+            }
+        }
+    }
+
 }
