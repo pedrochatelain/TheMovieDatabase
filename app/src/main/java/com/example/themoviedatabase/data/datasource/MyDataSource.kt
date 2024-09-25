@@ -1,8 +1,10 @@
 package com.example.themoviedatabase.data.datasource
 
+import com.example.themoviedatabase.data.dto.MovieAPI
+import retrofit2.Response
+
 interface MyDataSource {
 
-    fun addNumber(number: Int)
-    fun printNumbers()
+    suspend fun getMovies(): Response<MovieAPI>
 
 }

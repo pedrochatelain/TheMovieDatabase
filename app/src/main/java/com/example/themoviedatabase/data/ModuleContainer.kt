@@ -1,6 +1,6 @@
 package com.example.themoviedatabase.data
 
-import com.example.themoviedatabase.data.datasource.InMemoryDataSource
+import com.example.themoviedatabase.data.datasource.Retrofit
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ class ModuleContainer {
 
     @Provides
     fun provideRepository(): Repository {
-        return Repository(InMemoryDataSource())
+        return Repository(Retrofit())
     }
 
 }

@@ -9,7 +9,7 @@ import javax.inject.Inject
 class Repository @Inject constructor(private val dataSource: MyDataSource)  {
 
     suspend fun getMovies(): List<Movie> {
-        val response: Response<MovieAPI> = Retrofit().getPopularMovies()
+        val response: Response<MovieAPI> = dataSource.getMovies()
         if (response.isSuccessful) {
             return response.body()!!.movies
         }
