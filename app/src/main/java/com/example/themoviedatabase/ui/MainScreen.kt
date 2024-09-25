@@ -13,15 +13,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
-import com.example.themoviedatabase.ui.MainViewModel
 
 @Composable
 fun MainScreen(mainViewModel: MainViewModel) {
@@ -42,14 +36,11 @@ fun MainScreen(mainViewModel: MainViewModel) {
                 }
             }
         }
-        Text(fontSize = TextUnit(22F, TextUnitType.Sp), text = "Taps on button: " + mainViewModel.getNumberOfTaps())
         Spacer(Modifier.height(height = Dp(10F)))
         Button(onClick = {
-            mainViewModel.incrementCounter()
-            mainViewModel.persist()
             mainViewModel.getMovies()
         }) {
-            Text("Tap me!")
+            Text("Get movies!")
         }
     }
 }
