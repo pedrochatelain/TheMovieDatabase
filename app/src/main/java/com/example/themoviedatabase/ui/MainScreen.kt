@@ -3,9 +3,12 @@ package com.example.themoviedatabase.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -28,11 +31,15 @@ fun MainScreen(mainViewModel: MainViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(Modifier.height(Dp(40F))) {
+        Box(Modifier.height(Dp(200F))) {
             if (mainViewModel.isLoading()) {
                 CircularProgressIndicator()
             } else {
-                Text(text = mainViewModel.result)
+                LazyColumn {
+                    items(items = mainViewModel.movies) { movie ->
+                        Row { Text(text = movie.toString()) }
+                    }
+                }
             }
         }
         Text(fontSize = TextUnit(22F, TextUnitType.Sp), text = "Taps on button: " + mainViewModel.getNumberOfTaps())
@@ -40,6 +47,7 @@ fun MainScreen(mainViewModel: MainViewModel) {
         Button(onClick = {
             mainViewModel.incrementCounter()
             mainViewModel.persist()
+            mainViewModel.getMovies()
         }) {
             Text("Tap me!")
         }
