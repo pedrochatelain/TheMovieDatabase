@@ -55,6 +55,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.androidx.core.ktx)
@@ -74,6 +75,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
 }
 
 // Allow references to generated code

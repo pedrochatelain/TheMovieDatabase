@@ -1,11 +1,13 @@
 package com.example.themoviedatabase.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,6 +28,13 @@ fun MainScreen(mainViewModel: MainViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(Modifier.height(Dp(40F))) {
+            if (mainViewModel.isLoading()) {
+                CircularProgressIndicator()
+            } else {
+                Text(text = mainViewModel.result)
+            }
+        }
         Text(fontSize = TextUnit(22F, TextUnitType.Sp), text = "Taps on button: " + mainViewModel.getNumberOfTaps())
         Spacer(Modifier.height(height = Dp(10F)))
         Button(onClick = {
