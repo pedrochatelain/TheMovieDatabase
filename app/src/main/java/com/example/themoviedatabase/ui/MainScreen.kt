@@ -28,7 +28,10 @@ fun MainScreen(mainViewModel: MainViewModel) {
     ) {
         Text(fontSize = TextUnit(22F, TextUnitType.Sp), text = "Taps on button: " + mainViewModel.getNumberOfTaps())
         Spacer(Modifier.height(height = Dp(10F)))
-        Button(onClick = { mainViewModel.incrementCounter() }) {
+        Button(onClick = {
+            mainViewModel.incrementCounter()
+            mainViewModel.persist()
+        }) {
             Text("Tap me!")
         }
     }
