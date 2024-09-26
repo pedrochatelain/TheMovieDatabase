@@ -77,6 +77,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.retrofit.v290)
     implementation(libs.converter.gson.v290)
+    implementation(libs.coil.compose)
 
 
 }
