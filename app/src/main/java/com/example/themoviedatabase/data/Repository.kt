@@ -2,7 +2,7 @@ package com.example.themoviedatabase.data
 
 import com.example.themoviedatabase.data.datasource.MyDataSource
 import com.example.themoviedatabase.data.dto.Movie
-import com.example.themoviedatabase.data.dto.MovieAPI
+import com.example.themoviedatabase.data.dto.api.MovieAPI
 import retrofit2.Response
 import javax.inject.Inject
 

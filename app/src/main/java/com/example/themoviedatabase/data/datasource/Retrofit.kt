@@ -1,6 +1,6 @@
 package com.example.themoviedatabase.data.datasource
 
-import com.example.themoviedatabase.data.dto.MovieAPI
+import com.example.themoviedatabase.data.dto.api.MovieAPI
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
