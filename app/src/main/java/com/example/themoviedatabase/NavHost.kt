@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.themoviedatabase.ui.MainScreen
+import com.example.themoviedatabase.ui.MoviesScreen
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -15,13 +15,13 @@ fun MyAppNavHost(
     navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
-        startDestination = MainScreen
+        startDestination = MoviesRoute
     ) {
-        composable<MainScreen> {
-            MainScreen(onMovieClick = { movieID -> navController.navigate(MovieDetail(movieID)) })
+        composable<MoviesRoute> {
+            MoviesScreen(onMovieClick = { movieID -> navController.navigate(MovieDetailRoute(movieID)) })
         }
-        composable<MovieDetail> { entry ->
-            val movie = entry.toRoute<MovieDetail>()
+        composable<MovieDetailRoute> { entry ->
+            val movie = entry.toRoute<MovieDetailRoute>()
             Text(text = movie.title)
         }
     }
@@ -29,7 +29,7 @@ fun MyAppNavHost(
 
 
 @Serializable
-object MainScreen
+object MoviesRoute
 
 @Serializable
-data class MovieDetail(val title: String)
+data class MovieDetailRoute(val title: String)
