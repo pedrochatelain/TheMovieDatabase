@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,6 +31,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: String) -> Unit) {
+    if (! viewModel.isDisplayingMovies) {
+        viewModel.getMovies()
+    }
     Scaffold(topBar = {TopBar()}) {
         Column(
             modifier = Modifier.fillMaxSize().padding(it),
@@ -38,18 +44,13 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
                 if (viewModel.isLoading()) {
                     CircularProgressIndicator()
                 } else {
-                    LazyRow {
+                    LazyVerticalGrid(modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
+                    )  {
                         items(items = viewModel.movies) { movie ->
                             CardMovie(movie, onMovieClick)
                         }
                     }
                 }
-            }
-            Spacer(Modifier.height(height = 5.dp))
-            Button(onClick = {
-                viewModel.getMovies()
-            }) {
-                Text("Get movies!")
             }
         }
     }

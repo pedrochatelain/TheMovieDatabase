@@ -20,6 +20,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
     private var loading by mutableStateOf(false)
+    var isDisplayingMovies by mutableStateOf(false)
     var movies = mutableStateListOf<Movie>()
 
     fun isLoading(): Boolean {
@@ -27,11 +28,14 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     }
 
     fun getMovies() {
-        loading = true
+        if (! isDisplayingMovies) {
+            loading = true
+        }
         viewModelScope.launch {
             val response: List<Movie> = repository.getMovies()
             movies.addAll(response)
             loading = false
+            isDisplayingMovies = true
         }
     }
 
