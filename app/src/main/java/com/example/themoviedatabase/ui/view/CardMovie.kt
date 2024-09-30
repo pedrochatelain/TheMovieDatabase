@@ -1,4 +1,4 @@
-package com.example.themoviedatabase.ui
+package com.example.themoviedatabase.ui.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

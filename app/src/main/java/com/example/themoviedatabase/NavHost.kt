@@ -1,13 +1,13 @@
 package com.example.themoviedatabase
 
-import DetailsMovieScreen
+import com.example.themoviedatabase.ui.view.DetailsMovieScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.themoviedatabase.ui.MoviesScreen
+import com.example.themoviedatabase.ui.view.MoviesScreen
 import kotlinx.serialization.Serializable
 
 @Composable

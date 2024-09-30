@@ -1,4 +1,4 @@
-package com.example.themoviedatabase.ui
+package com.example.themoviedatabase.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

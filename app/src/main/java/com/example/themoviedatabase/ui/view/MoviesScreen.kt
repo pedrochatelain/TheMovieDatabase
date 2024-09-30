@@ -1,4 +1,4 @@
-package com.example.themoviedatabase.ui
+package com.example.themoviedatabase.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
 fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
     if (! viewModel.isDisplayingMovies) {
         viewModel.getMovies()
     }
-    Scaffold(topBar = {TopBar()}) {
+    Scaffold(topBar = { TopBar() }) {
         Column(
             modifier = Modifier.fillMaxSize().padding(it),
             verticalArrangement = Arrangement.Center,
