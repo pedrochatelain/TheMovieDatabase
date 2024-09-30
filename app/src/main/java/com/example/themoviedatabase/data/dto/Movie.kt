@@ -3,6 +3,7 @@ package com.example.themoviedatabase.data.dto
 import com.google.gson.annotations.SerializedName
 
 data class Movie(
+    @SerializedName("id") val id: Int,
     @SerializedName("original_language") val originalLanguage: String,
     @SerializedName("original_title") val originalTitle: String,
     @SerializedName("poster_path") val image: String)

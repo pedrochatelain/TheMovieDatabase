@@ -19,8 +19,8 @@ import com.example.themoviedatabase.data.dto.Movie
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardMovie(movie: Movie, onMovieClick: (movieID: String) -> Unit) {
-    ElevatedCard(onClick = { onMovieClick(movie.originalTitle) }, modifier = Modifier.padding(5.dp)) {
+fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
+    ElevatedCard(onClick = { onMovieClick(movie.id) }, modifier = Modifier.padding(5.dp)) {
         Column {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: String) -> Unit) {
+fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
     if (! viewModel.isDisplayingMovies) {
         viewModel.getMovies()
     }

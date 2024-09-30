@@ -8,5 +8,5 @@ data class DetailsMovieAPI(
     @SerializedName("backdrop_path") val portada: String,
     @SerializedName("overview") val resumen: String,
     @SerializedName("genres") val generos: List<Genero>,
-    @SerializedName("vote_average") val rating: Int
+    @SerializedName("vote_average") val rating: Double
 )

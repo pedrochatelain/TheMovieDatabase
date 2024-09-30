@@ -1,6 +1,6 @@
 package com.example.themoviedatabase
 
-import androidx.compose.material3.Text
+import DetailsMovieScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,14 +22,13 @@ fun MyAppNavHost(
         }
         composable<MovieDetailRoute> { entry ->
             val movie = entry.toRoute<MovieDetailRoute>()
-            Text(text = movie.title)
+            DetailsMovieScreen(movie.id)
         }
     }
 }
-
 
 @Serializable
 object MoviesRoute
 
 @Serializable
-data class MovieDetailRoute(val title: String)
+data class MovieDetailRoute(val id: Int)
