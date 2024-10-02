@@ -1,8 +1,10 @@
 package com.example.themoviedatabase.data
 
 import com.example.themoviedatabase.data.datasource.MyDataSource
+import com.example.themoviedatabase.data.dto.Actor
 import com.example.themoviedatabase.data.dto.DetailsMovie
 import com.example.themoviedatabase.data.dto.Movie
+import com.example.themoviedatabase.data.dto.api.ActorsAPI
 import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 import com.example.themoviedatabase.data.dto.api.MovieAPI
 import retrofit2.Response
@@ -24,6 +26,14 @@ class Repository @Inject constructor(private val dataSource: MyDataSource)  {
             return DetailsMovie(response.body()!!)
         }
         return null
+    }
+
+    suspend fun getActors(movieID: Int): List<Actor> {
+        val response: Response<ActorsAPI> = dataSource.getActors(movieID)
+        if (response.isSuccessful) {
+            return response.body()!!.actores
+        }
+        return emptyList()
     }
 
 }

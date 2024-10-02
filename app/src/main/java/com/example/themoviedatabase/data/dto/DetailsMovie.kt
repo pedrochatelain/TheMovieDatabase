@@ -7,7 +7,7 @@ data class DetailsMovie(
     val portada: String,
     val resumen: String,
     val generos: List<Genero>,
-    val actores: List<Actor>,
+    var actores: List<Actor>,
     val rating: Double
 ) {
     constructor(details: DetailsMovieAPI) : this(details.titulo, details.portada, details.resumen, details.generos, emptyList(), details.rating)

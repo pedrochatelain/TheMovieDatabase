@@ -1,5 +1,6 @@
 package com.example.themoviedatabase.data.datasource
 
+import com.example.themoviedatabase.data.dto.api.ActorsAPI
 import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 import com.example.themoviedatabase.data.dto.api.MovieAPI
 import retrofit2.Response
@@ -25,6 +26,11 @@ class Retrofit: MyDataSource {
         val detailsService = retrofit.create(DetailsMovieService::class.java)
         return detailsService.getDetailsMovie(id, API_KEY)
     }
+
+    override suspend fun getActors(movieID: Int): Response<ActorsAPI> {
+        val detailsService = retrofit.create(ActorsMovieService::class.java)
+        return detailsService.getActorsMovie(movieID, API_KEY)
+    }
 }
 
 interface MovieService {
@@ -35,4 +41,9 @@ interface MovieService {
 interface DetailsMovieService {
     @GET("{id}")
     suspend fun getDetailsMovie(@Path("id") id: Int, @Query("api_key") apiKey: String): Response<DetailsMovieAPI>
+}
+
+interface ActorsMovieService {
+    @GET("{id}/credits")
+    suspend fun getActorsMovie(@Path("id") id: Int, @Query("api_key") apiKey: String): Response<ActorsAPI>
 }
