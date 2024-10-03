@@ -3,7 +3,6 @@ package com.example.themoviedatabase.ui.view
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -53,29 +54,7 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
     if (viewModel.isDisplayingDetails) {
         val movie = viewModel.details!!
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Box {
-                Image(
-                    modifier = Modifier
-                        .height(250.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.FillBounds,
-                    bitmap = viewModel.image,
-                    contentDescription = ""
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).height(10.dp)
-                        .drawWithCache {
-                            onDrawWithContent {
-                                drawContent()
-                                drawRect(
-                                    Brush.verticalGradient(
-                                        0f to Color(0xFFFFFBFE).copy(alpha = 0F),
-                                        .5F to Color(0xFFFFFBFE)
-                                    )
-                                )
-                            }
-                        }) {}
-            }
+            PictureMovie(viewModel)
             Column {
                 Text(
                     text = movie.titulo,
@@ -83,23 +62,10 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 10.dp)
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.padding(start = 18.dp).size(24.dp),
-                        tint = Color.hsv(47f, .87f, .96f),
-                        imageVector = Icons.Sharp.Star,
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = "${movie.rating}",
-                        modifier = Modifier.padding(start = 6.dp),
-                        fontSize = 18.sp
-                    )
-                    Text(text = " / 10", fontSize = 18.sp, fontWeight = FontWeight.Light)
-                }
+                Rating(movie)
                 Text(
                     text = movie.resumen,
-                    modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                    modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
                     fontSize = 18.sp
                 )
                 Genres(movie)
@@ -111,19 +77,71 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
                         .padding(top = 40.dp, bottom = 10.dp)
                         .padding(start = 20.dp)
                 )
-                Row(
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState())
-                        .padding(start = 20.dp, bottom = 20.dp)
-                ) {
-                    for (actor in movie.actores) {
-                        ActorCard(actor)
-                    }
-                }
+                Cast(movie)
             }
         }
     } else {
         Loading()
+    }
+}
+
+@Composable
+private fun Cast(movie: DetailsMovie) {
+    LazyRow(modifier = Modifier.padding(start = 20.dp, bottom = 20.dp)) {
+        items(items = movie.actores) { actor ->
+            ActorCard(actor)
+        }
+    }
+}
+
+@Composable
+private fun PictureMovie(viewModel: DetailsMovieViewModel) {
+    Box {
+        Image(
+            modifier = Modifier
+                .height(250.dp)
+                .fillMaxWidth(),
+            contentScale = ContentScale.FillBounds,
+            bitmap = viewModel.image,
+            contentDescription = ""
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomEnd)
+                .height(10.dp)
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(
+                            Brush.verticalGradient(
+                                0f to Color(0xFFFFFBFE).copy(alpha = 0F),
+                                .5F to Color(0xFFFFFBFE)
+                            )
+                        )
+                    }
+                }
+        ) {}
+    }
+}
+
+@Composable
+private fun Rating(movie: DetailsMovie) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            modifier = Modifier
+                .padding(start = 18.dp)
+                .size(24.dp),
+            tint = Color.hsv(47f, .87f, .96f),
+            imageVector = Icons.Sharp.Star,
+            contentDescription = ""
+        )
+        Text(
+            text = "${movie.rating}",
+            modifier = Modifier.padding(start = 6.dp),
+            fontSize = 18.sp
+        )
+        Text(text = " / 10", fontSize = 18.sp, fontWeight = FontWeight.Light)
     }
 }
 
@@ -143,9 +161,9 @@ private fun Genres(movie: DetailsMovie) {
                 Text(
                     text = genero.toString(),
                     fontWeight = FontWeight.Light,
-                    fontSize = 15.sp,
+                    fontSize = 16.sp,
                     modifier = Modifier
-                        .padding(6.dp)
+                        .padding(4.dp)
                         .padding(start = 10.dp, end = 10.dp)
                 )
             }
@@ -166,23 +184,24 @@ private fun Loading() {
 
 @Composable
 fun ActorCard(actor: Actor) {
-    Column {
+    Column(modifier = Modifier
+        .height(220.dp)
+        .width(120.dp)
+        .padding(end = 20.dp)
+    ){
         AsyncImage(
-            error = painterResource(R.drawable.placeholder),
             modifier = Modifier
-                .height(150.dp)
-                .width(120.dp)
-                .padding(end = 20.dp)
                 .clip(shape = RoundedCornerShape(10.dp)),
+            error = painterResource(R.drawable.placeholder),
             placeholder = painterResource(R.drawable.placeholder),
             model = "https://image.tmdb.org/t/p/w500/${actor.foto}",
             contentDescription = null,
         )
         Text(
-            text = actor.nombre,
             modifier = Modifier
-                .width(90.dp)
+                .width(120.dp)
                 .padding(top = 6.dp),
+            text = actor.nombre,
             fontSize = 16.sp
         )
     }
