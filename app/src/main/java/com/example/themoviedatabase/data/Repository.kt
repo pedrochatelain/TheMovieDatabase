@@ -3,7 +3,7 @@ package com.example.themoviedatabase.data
 import com.example.themoviedatabase.data.datasource.MyDataSource
 import com.example.themoviedatabase.data.dto.Actor
 import com.example.themoviedatabase.data.dto.DetailsMovie
-import com.example.themoviedatabase.data.dto.Movie
+import com.example.themoviedatabase.data.dto.ResponseGetPopularMovies
 import com.example.themoviedatabase.data.dto.api.ActorsAPI
 import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 import com.example.themoviedatabase.data.dto.api.MovieAPI
@@ -12,12 +12,18 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(private val dataSource: MyDataSource)  {
 
-    suspend fun getMovies(): List<Movie> {
-        val response: Response<MovieAPI> = dataSource.getMovies()
-        if (response.isSuccessful) {
-            return response.body()!!.movies
-        }
-        return emptyList()
+    suspend fun getMovies(): ResponseGetPopularMovies {
+        try {
+            val result: Response<MovieAPI> = dataSource.getMovies()
+            if (result.isSuccessful) {
+                return ResponseGetPopularMovies(
+                    movies = result.body()!!.movies,
+                    httpCode = 200,
+                    isSuccessful = true
+                )
+            }
+        } catch (_: Throwable) {}
+        return ResponseGetPopularMovies(httpCode = 500, isSuccessful = false)
     }
 
     suspend fun getMovieDetails(id: Int): DetailsMovie? {

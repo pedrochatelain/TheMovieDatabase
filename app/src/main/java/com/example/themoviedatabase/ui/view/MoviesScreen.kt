@@ -2,33 +2,37 @@ package com.example.themoviedatabase.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.themoviedatabase.R
 import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
 fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
-    if (! viewModel.isDisplayingMovies) {
-        viewModel.getMovies()
+    if (! viewModel.moviesLoaded) {
+        viewModel.loadMovies()
     }
     Scaffold(topBar = { TopBar() }) {
         Column(
@@ -36,18 +40,44 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box {
-                if (viewModel.loading) {
-                    CircularProgressIndicator()
-                } else {
-                    LazyVerticalGrid(modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
-                    )  {
-                        items(items = viewModel.movies) { movie ->
-                            CardMovie(movie, onMovieClick)
-                        }
-                    }
-                }
+            when {
+                viewModel.loading -> CircularProgressIndicator()
+                viewModel.moviesLoaded -> ListOfMovies(viewModel, onMovieClick)
+                viewModel.error -> ErrorScreen(viewModel)
             }
+        }
+    }
+}
+
+@Composable
+private fun ErrorScreen(viewModel: MainViewModel) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(
+            painter = painterResource(R.drawable.wifi_off_24px),
+            contentDescription = "",
+            modifier = Modifier.size(60.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Text("No internet connection", fontSize = 20.sp, modifier = Modifier.padding(top = 10.dp))
+        Button(
+            onClick = { viewModel.loadMovies() },
+            modifier = Modifier.padding(top = 50.dp)
+        ) {
+            Text("Try again")
+        }
+    }
+}
+
+@Composable
+private fun ListOfMovies(
+    viewModel: MainViewModel,
+    onMovieClick: (movieID: Int) -> Unit
+) {
+    LazyVerticalGrid(
+        modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
+    ) {
+        items(items = viewModel.movies) { movie ->
+            CardMovie(movie, onMovieClick)
         }
     }
 }
