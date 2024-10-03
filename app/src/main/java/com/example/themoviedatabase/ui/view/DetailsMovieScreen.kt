@@ -47,12 +47,10 @@ import com.example.themoviedatabase.ui.viewmodel.DetailsMovieViewModel
 
 @Composable
 fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
-    if (! viewModel.isDisplayingDetails) {
+    if (! viewModel.startedLoadingMovie) {
         viewModel.loadMovie(idMovie)
     }
-    if (viewModel.loading) {
-        Loading()
-    } else {
+    if (viewModel.isDisplayingDetails) {
         val movie = viewModel.details!!
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Box {
@@ -64,39 +62,69 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
                     bitmap = viewModel.image,
                     contentDescription = ""
                 )
-                Row(modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).height(10.dp).drawWithCache {
-                    onDrawWithContent {
-                        drawContent()
-                        drawRect(Brush.verticalGradient(
-                            0f to Color(0xFFFFFBFE).copy(alpha=0F),
-                            .5F to Color(0xFFFFFBFE)
-                        ))
-                    }
-                }) {}
+                Row(
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).height(10.dp)
+                        .drawWithCache {
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(
+                                    Brush.verticalGradient(
+                                        0f to Color(0xFFFFFBFE).copy(alpha = 0F),
+                                        .5F to Color(0xFFFFFBFE)
+                                    )
+                                )
+                            }
+                        }) {}
             }
             Column {
-                Text(text = movie.titulo, fontSize = 26.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 10.dp))
+                Text(
+                    text = movie.titulo,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 10.dp)
+                )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(modifier = Modifier.padding(start = 18.dp).size(24.dp), tint = Color.hsv(47f, .87f, .96f), imageVector = Icons.Sharp.Star, contentDescription = "")
-                    Text(text = "${movie.rating}", modifier = Modifier.padding(start = 6.dp), fontSize = 18.sp)
+                    Icon(
+                        modifier = Modifier.padding(start = 18.dp).size(24.dp),
+                        tint = Color.hsv(47f, .87f, .96f),
+                        imageVector = Icons.Sharp.Star,
+                        contentDescription = ""
+                    )
+                    Text(
+                        text = "${movie.rating}",
+                        modifier = Modifier.padding(start = 6.dp),
+                        fontSize = 18.sp
+                    )
                     Text(text = " / 10", fontSize = 18.sp, fontWeight = FontWeight.Light)
                 }
-                Text(text = movie.resumen, modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp), fontSize = 18.sp)
+                Text(
+                    text = movie.resumen,
+                    modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                    fontSize = 18.sp
+                )
                 Genres(movie)
-                Text(text = "Cast", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier
-                    .padding(top = 40.dp, bottom = 10.dp)
-                    .padding(start = 20.dp))
-                Row(modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(start = 20.dp, bottom = 20.dp)) {
+                Text(
+                    text = "Cast",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(top = 40.dp, bottom = 10.dp)
+                        .padding(start = 20.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(start = 20.dp, bottom = 20.dp)
+                ) {
                     for (actor in movie.actores) {
                         ActorCard(actor)
                     }
                 }
             }
         }
+    } else {
+        Loading()
     }
-
 }
 
 @Composable

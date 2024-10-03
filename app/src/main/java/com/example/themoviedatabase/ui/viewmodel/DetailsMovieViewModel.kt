@@ -1,7 +1,6 @@
 package com.example.themoviedatabase.ui.viewmodel
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -25,8 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsMovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    var isDisplayingDetails: Boolean = false
-    var loading by mutableStateOf(false)
+    var isDisplayingDetails by mutableStateOf(false)
+    var startedLoadingMovie: Boolean = false
     var actors = mutableStateListOf<Actor>()
     var details by mutableStateOf<DetailsMovie?>(null)
     var image by mutableStateOf(ImageBitmap(1, 1))
@@ -55,14 +54,12 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
     }
 
     fun loadMovie(id: Int) {
-        Log.i("loadMovie", "loadMovie")
-        loading = true
+        startedLoadingMovie = true
         viewModelScope.launch {
             loadDetails(id).join()
             loadImage(details!!.portada).join()
             loadActors(id).join()
             details!!.actores = actors
-            loading = false
             isDisplayingDetails = true
         }
     }
