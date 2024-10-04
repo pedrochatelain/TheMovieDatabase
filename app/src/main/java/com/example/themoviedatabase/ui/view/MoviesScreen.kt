@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -78,6 +80,23 @@ private fun ListOfMovies(
     ) {
         items(items = viewModel.movies) { movie ->
             CardMovie(movie, onMovieClick)
+        }
+        item {
+            // triggers when scroll to bottom of list
+            LaunchedEffect(true) {
+                viewModel.bottomOfList = true
+            }
+        }
+        if (viewModel.bottomOfList) {
+            viewModel.loadMoreMovies()
+            viewModel.bottomOfList = false
+            item(span = { GridItemSpan(2) }) {
+                if (viewModel.loadingMoreMovies) {
+                    Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
         }
     }
 }

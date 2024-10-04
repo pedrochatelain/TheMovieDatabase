@@ -26,6 +26,20 @@ class Repository @Inject constructor(private val dataSource: MyDataSource)  {
         return ResponseGetPopularMovies(httpCode = 500, isSuccessful = false)
     }
 
+    suspend fun getMoreMovies(page: Int): ResponseGetPopularMovies {
+        try {
+            val result: Response<MovieAPI> = dataSource.getMoreMovies(page)
+            if (result.isSuccessful) {
+                return ResponseGetPopularMovies(
+                    movies = result.body()!!.movies,
+                    httpCode = 200,
+                    isSuccessful = true
+                )
+            }
+        } catch (_: Throwable) {}
+        return ResponseGetPopularMovies(httpCode = 500, isSuccessful = false)
+    }
+
     suspend fun getMovieDetails(id: Int): DetailsMovie? {
         val response: Response<DetailsMovieAPI> = dataSource.getMovieDetails(id)
         if (response.isSuccessful) {

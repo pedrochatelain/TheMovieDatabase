@@ -22,6 +22,11 @@ class Retrofit: MyDataSource {
         return service.getPopularMovies(API_KEY)
     }
 
+    override suspend fun getMoreMovies(page: Int): Response<MovieAPI> {
+        val moreMoviesService = retrofit.create(MoreMoviesService::class.java)
+        return moreMoviesService.getMoreMovies(API_KEY, page)
+    }
+
     override suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI> {
         val detailsService = retrofit.create(DetailsMovieService::class.java)
         return detailsService.getDetailsMovie(id, API_KEY)
@@ -36,6 +41,11 @@ class Retrofit: MyDataSource {
 interface MovieService {
     @GET("popular")
     suspend fun getPopularMovies(@Query("api_key") apiKey: String): Response<MovieAPI>
+}
+
+interface MoreMoviesService {
+    @GET("popular")
+    suspend fun getMoreMovies(@Query("api_key") apiKey: String, @Query("page") page: Int): Response<MovieAPI>
 }
 
 interface DetailsMovieService {

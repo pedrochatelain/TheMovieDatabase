@@ -9,6 +9,8 @@ interface MyDataSource {
 
     suspend fun getMovies(): Response<MovieAPI>
 
+    suspend fun getMoreMovies(page: Int): Response<MovieAPI>
+
     suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI>
 
     suspend fun getActors(movieID: Int): Response<ActorsAPI>
