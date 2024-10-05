@@ -91,12 +91,36 @@ private fun ListOfMovies(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .padding(10.dp)
-                    .height(50.dp)
             ) {
                 if (viewModel.loadingMoreMovies) {
-                    CircularProgressIndicator()
+                    Row(modifier = Modifier.padding(bottom = 50.dp)) {
+                        CircularProgressIndicator()
+                    }
+                }
+                if (viewModel.errorLoadMoreMovies) {
+                    ErrorLoadingMoreMovies(viewModel)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ErrorLoadingMoreMovies(viewModel: MainViewModel) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(R.drawable.wifi_off_24px),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(35.dp)
+                    .padding(end = 10.dp),
+                tint = MaterialTheme.colorScheme.error
+            )
+            Text("No internet connection", fontSize = 18.sp)
+        }
+        Button(onClick = { viewModel.loadMoreMovies() }, modifier = Modifier.padding(5.dp)) {
+            Text("Try again")
         }
     }
 }

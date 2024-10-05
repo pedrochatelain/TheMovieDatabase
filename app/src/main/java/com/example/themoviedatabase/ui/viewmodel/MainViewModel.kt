@@ -16,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+    var errorLoadMoreMovies by mutableStateOf(false)
     private var page: Int = 1
     var loadingMoreMovies by mutableStateOf(true)
     var error by mutableStateOf(false)
@@ -41,10 +42,14 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
 
     fun loadMoreMovies() {
         loadingMoreMovies = true
+        errorLoadMoreMovies = false
         viewModelScope.launch {
             val response: ResponseGetPopularMovies = repository.getMoreMovies(++page)
             if (response.isSuccessful) {
                 movies.addAll(response.movies)
+            } else {
+                errorLoadMoreMovies = true
+                --page
             }
             loadingMoreMovies = false
         }
