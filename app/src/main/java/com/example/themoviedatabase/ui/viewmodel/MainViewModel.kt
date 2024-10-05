@@ -18,7 +18,6 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
 
     private var page: Int = 1
     var loadingMoreMovies by mutableStateOf(true)
-    var bottomOfList by mutableStateOf(false)
     var error by mutableStateOf(false)
     var moviesLoaded by mutableStateOf(false)
     var movies = mutableStateListOf<Movie>()
