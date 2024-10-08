@@ -46,7 +46,7 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
     private fun loadImage(poster: String): Job {
         return viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val url = URL("https://image.tmdb.org/t/p/w500/${poster}")
+                val url = URL("https://image.tmdb.org/t/p/original/${poster}")
                 val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
                 image = bitmap.asImageBitmap()
             }

@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.DateRange
 import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -57,12 +58,36 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
             PictureMovie(viewModel)
             Column {
                 Text(
-                    text = movie.titulo,
+                    text = movie.titulo_original,
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 20.dp, top = 20.dp, bottom = 10.dp)
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
                 )
+                if (movie.titulo_original != movie.titulo) {
+                    Text(
+                        text = movie.titulo,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Light,
+                        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                    )
+                }
                 Rating(movie)
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 5.dp)) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 18.dp)
+                            .size(19.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                        imageVector = Icons.Sharp.DateRange,
+                        contentDescription = ""
+                    )
+                    Text(
+                        text = movie.fecha_lanzamiento,
+                        modifier = Modifier.padding(start = 6.dp),
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = FontWeight.Light
+                    )
+                }
                 Text(
                     text = movie.resumen,
                     modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
@@ -96,42 +121,46 @@ private fun Cast(movie: DetailsMovie) {
 
 @Composable
 private fun PictureMovie(viewModel: DetailsMovieViewModel) {
-    Box {
+    Box(modifier = Modifier.padding(bottom = 30.dp)){
         Image(
             modifier = Modifier
-                .height(250.dp)
+                .height(220.dp)
+//                .clip(RoundedCornerShape(20.dp))
                 .fillMaxWidth(),
             contentScale = ContentScale.FillBounds,
             bitmap = viewModel.image,
             contentDescription = ""
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomEnd)
-                .height(10.dp)
-                .drawWithCache {
-                    onDrawWithContent {
-                        drawContent()
-                        drawRect(
-                            Brush.verticalGradient(
-                                0f to Color(0xFFFFFBFE).copy(alpha = 0F),
-                                .5F to Color(0xFFFFFBFE)
-                            )
-                        )
-                    }
-                }
-        ) {}
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .align(Alignment.BottomEnd)
+//                .height(10.dp)
+//                .drawWithCache {
+//                    onDrawWithContent {
+//                        drawContent()
+//                        drawRect(
+//                            Brush.verticalGradient(
+//                                0f to Color(0xFFFFFBFE).copy(alpha = 0F),
+//                                .5F to Color(0xFFFFFBFE)
+//                            )
+//                        )
+//                    }
+//                }
+//        ) {}
     }
 }
 
 @Composable
 private fun Rating(movie: DetailsMovie) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
+    ){
         Icon(
             modifier = Modifier
                 .padding(start = 18.dp)
-                .size(24.dp),
+                .size(20.dp),
             tint = Color.hsv(47f, .87f, .96f),
             imageVector = Icons.Sharp.Star,
             contentDescription = ""
@@ -139,9 +168,10 @@ private fun Rating(movie: DetailsMovie) {
         Text(
             text = "${movie.rating}",
             modifier = Modifier.padding(start = 6.dp),
-            fontSize = 18.sp
+            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+            fontWeight = FontWeight.Light
         )
-        Text(text = " / 10", fontSize = 18.sp, fontWeight = FontWeight.Light)
+        Text(text = " / 10", fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Thin)
     }
 }
 
@@ -185,8 +215,8 @@ private fun Loading() {
 @Composable
 fun ActorCard(actor: Actor) {
     Column(modifier = Modifier
-        .height(220.dp)
-        .width(120.dp)
+        .height(200.dp)
+        .width(110.dp)
         .padding(end = 20.dp)
     ){
         AsyncImage(
@@ -198,11 +228,10 @@ fun ActorCard(actor: Actor) {
             contentDescription = null,
         )
         Text(
-            modifier = Modifier
-                .width(120.dp)
-                .padding(top = 6.dp),
+            modifier = Modifier.padding(top = 5.dp),
             text = actor.nombre,
-            fontSize = 16.sp
+            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+//            fontWeight = FontWeight.Light
         )
     }
 }
