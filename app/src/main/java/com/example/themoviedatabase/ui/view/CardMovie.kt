@@ -32,14 +32,14 @@ fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
         Text(
             modifier = Modifier.padding(start = 10.dp, top = 10.dp).width(230.dp),
             fontSize = 16.sp,
-            text = movie.originalTitle,
+            text = movie.title,
             fontWeight = FontWeight.Bold,
         )
         Text(
             modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
             fontSize = 14.sp,
             fontWeight = FontWeight.Light,
-            text = "original language: ${movie.originalLanguage}"
+            text = movie.getAnioLanzamiento().toString()
         )
     }
 }
