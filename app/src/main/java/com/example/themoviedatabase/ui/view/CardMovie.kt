@@ -3,7 +3,6 @@ package com.example.themoviedatabase.ui.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -30,13 +29,13 @@ fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
             )
         }
         Text(
-            modifier = Modifier.padding(start = 10.dp, top = 10.dp).width(230.dp),
+            modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp),
             fontSize = 16.sp,
             text = movie.title,
             fontWeight = FontWeight.Bold,
         )
         Text(
-            modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
+            modifier = Modifier.padding(start = 10.dp, bottom = 10.dp, top = 2.dp),
             fontSize = 14.sp,
             fontWeight = FontWeight.Light,
             text = movie.getAnioLanzamiento().toString()
