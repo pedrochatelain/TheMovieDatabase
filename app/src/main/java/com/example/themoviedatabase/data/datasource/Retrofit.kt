@@ -22,6 +22,15 @@ class Retrofit: MyDataSource {
         return service.getPopularMovies(API_KEY)
     }
 
+    override suspend fun searchMovies(titleMovie: String): Response<MovieAPI> {
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl("https://api.themoviedb.org/3/search/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        var service = retrofit.create(SearchService::class.java)
+        return service.searchMovies(API_KEY, titleMovie)
+    }
+
     override suspend fun getMoreMovies(page: Int): Response<MovieAPI> {
         val moreMoviesService = retrofit.create(MoreMoviesService::class.java)
         return moreMoviesService.getMoreMovies(API_KEY, page)
@@ -41,6 +50,11 @@ class Retrofit: MyDataSource {
 interface MovieService {
     @GET("popular")
     suspend fun getPopularMovies(@Query("api_key") apiKey: String): Response<MovieAPI>
+}
+
+interface SearchService {
+    @GET("movie")
+    suspend fun searchMovies(@Query("api_key") apiKey: String, @Query("query") query: String): Response<MovieAPI>
 }
 
 interface MoreMoviesService {

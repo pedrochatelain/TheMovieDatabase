@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.themoviedatabase.data.Repository
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+    var searching by mutableStateOf(false)
     var errorLoadMoreMovies by mutableStateOf(false)
     private var page: Int = 1
     var loadingMoreMovies by mutableStateOf(true)
@@ -40,6 +42,20 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
         }
     }
 
+    fun searchMovie(titleMovie: String) {
+        searching = true
+        viewModelScope.launch {
+            val response: ResponseGetPopularMovies = repository.searchMovies(titleMovie)
+            if (response.isSuccessful) {
+                movies = SnapshotStateList()
+                movies.addAll(response.movies)
+            }
+            else {
+                error = true
+            }
+            searching = false
+        }
+    }
     fun loadMoreMovies() {
         loadingMoreMovies = true
         errorLoadMoreMovies = false

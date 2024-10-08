@@ -6,30 +6,41 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.themoviedatabase.R
+import com.example.themoviedatabase.ui.keyboardAsState
 import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
@@ -39,13 +50,18 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
     }
     Scaffold(topBar = { TopBar() }) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(it),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when {
                 viewModel.loading -> CircularProgressIndicator()
-                viewModel.moviesLoaded -> ListOfMovies(viewModel, onMovieClick)
+                viewModel.moviesLoaded -> {
+                    BuscadorPeliculas(viewModel)
+                    ListOfMovies(viewModel, onMovieClick)
+                }
                 viewModel.error -> ErrorScreen(viewModel)
             }
         }
@@ -76,32 +92,71 @@ private fun ListOfMovies(
     viewModel: MainViewModel,
     onMovieClick: (movieID: Int) -> Unit
 ) {
-    LazyVerticalGrid(
-        modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
-    ) {
-        items(items = viewModel.movies) { movie ->
-            CardMovie(movie, onMovieClick)
-        }
-        item(span = { GridItemSpan(2) }) {
-            // triggers when scroll to bottom of list
-            LaunchedEffect(Unit) {
-                viewModel.loadMoreMovies()
+    if ( ! viewModel.searching) {
+        LazyVerticalGrid(
+            modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
+        ) {
+            items(items = viewModel.movies) { movie ->
+                CardMovie(movie, onMovieClick)
             }
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(10.dp)
-            ) {
-                if (viewModel.loadingMoreMovies) {
-                    Row(modifier = Modifier.padding(bottom = 50.dp)) {
-                        CircularProgressIndicator()
+            item(span = { GridItemSpan(2) }) {
+                // triggers when scroll to bottom of list
+                LaunchedEffect(Unit) {
+                    viewModel.loadMoreMovies()
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(10.dp)
+                ) {
+                    if (viewModel.loadingMoreMovies) {
+                        Row(modifier = Modifier.padding(bottom = 50.dp)) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    if (viewModel.errorLoadMoreMovies) {
+                        ErrorLoadingMoreMovies(viewModel)
                     }
                 }
-                if (viewModel.errorLoadMoreMovies) {
-                    ErrorLoadingMoreMovies(viewModel)
-                }
             }
         }
+    } else {
+        SearchingScreen(viewModel)
+    }
+
+}
+
+@Composable
+private fun BuscadorPeliculas(viewModel: MainViewModel) {
+    var text by remember { mutableStateOf("") }
+
+    val focusManager = LocalFocusManager.current
+    val isKeyboardOpen = keyboardAsState().value
+
+    if (! isKeyboardOpen) {
+        focusManager.clearFocus()
+    }
+    OutlinedTextField(keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        shape = MaterialTheme.shapes.extraLarge,
+        modifier = Modifier
+            .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .fillMaxWidth(),
+        value = text,
+        placeholder = { Text("Search movie") },
+        onValueChange = {
+            text = it
+            viewModel.searching = text.isNotBlank()
+            viewModel.searchMovie(text)
+        },
+        leadingIcon = { Icon(Icons.Sharp.Search, "s") })
+}
+
+@Composable
+fun SearchingScreen(viewModel: MainViewModel) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Buscando...")
+        CircularProgressIndicator()
     }
 }
 

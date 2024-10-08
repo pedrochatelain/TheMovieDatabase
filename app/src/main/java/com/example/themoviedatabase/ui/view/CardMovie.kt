@@ -23,6 +23,7 @@ fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
         Column {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
+                error = painterResource(R.drawable.placeholder),
                 placeholder = painterResource(R.drawable.placeholder),
                 model = "https://image.tmdb.org/t/p/w500/${movie.image}",
                 contentDescription = null,
