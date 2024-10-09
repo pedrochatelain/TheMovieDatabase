@@ -5,7 +5,7 @@ import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 import com.example.themoviedatabase.data.dto.api.MovieAPI
 import retrofit2.Response
 
-interface MyDataSource {
+interface MoviesDataSource {
 
     suspend fun getMovies(titleMovie: String = ""): Response<MovieAPI>
 

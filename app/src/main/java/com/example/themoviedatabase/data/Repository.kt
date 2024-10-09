@@ -1,6 +1,6 @@
 package com.example.themoviedatabase.data
 
-import com.example.themoviedatabase.data.datasource.MyDataSource
+import com.example.themoviedatabase.data.datasource.MoviesDataSource
 import com.example.themoviedatabase.data.dto.Actor
 import com.example.themoviedatabase.data.dto.DetailsMovie
 import com.example.themoviedatabase.data.dto.ResponseGetPopularMovies
@@ -10,7 +10,7 @@ import com.example.themoviedatabase.data.dto.api.MovieAPI
 import retrofit2.Response
 import javax.inject.Inject
 
-class Repository @Inject constructor(private val dataSource: MyDataSource)  {
+class Repository @Inject constructor(private val dataSource: MoviesDataSource)  {
 
     suspend fun getMovies(title: String = ""): ResponseGetPopularMovies {
         try {

@@ -1,6 +1,6 @@
 package com.example.themoviedatabase.data
 
-import com.example.themoviedatabase.data.datasource.Retrofit
+import com.example.themoviedatabase.data.datasource.retrofit.Retrofit
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

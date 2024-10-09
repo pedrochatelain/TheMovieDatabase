@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
         if (search.isActive) {
             search.cancel()
         }
-        searching = titleMovie.isNotBlank()
+        searching = true
         searchedMovie = titleMovie
         search = viewModelScope.launch {
             val response: ResponseGetPopularMovies = repository.getMovies(titleMovie)
@@ -65,6 +65,21 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     }
 
     fun loadMoreMovies() {
+        loadingMoreMovies = true
+        errorLoadMoreMovies = false
+        viewModelScope.launch {
+            val response: ResponseGetPopularMovies = repository.getMoreMovies(++page)
+            if (response.isSuccessful) {
+                movies.addAll(response.movies)
+            } else {
+                errorLoadMoreMovies = true
+                --page
+            }
+            loadingMoreMovies = false
+        }
+    }
+
+    fun searchMoreMovies() {
         loadingMoreMovies = true
         errorLoadMoreMovies = false
         viewModelScope.launch {
