@@ -15,7 +15,10 @@ data class Movie(
     }
 
     fun getAnioLanzamiento(): Int {
-        return fecha_lanzamiento.take(4).toInt()
+        if (fecha_lanzamiento.isNotBlank())
+            return fecha_lanzamiento.take(4).toInt()
+        else
+            return 0
     }
 
 }

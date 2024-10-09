@@ -28,7 +28,7 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
     var startedLoadingMovie: Boolean = false
     var actors = mutableStateListOf<Actor>()
     var details by mutableStateOf<DetailsMovie?>(null)
-    var image by mutableStateOf(ImageBitmap(1, 1))
+    var image by mutableStateOf<ImageBitmap?>(null)
 
     private fun loadDetails(id: Int): Job {
         return viewModelScope.launch {
@@ -57,7 +57,9 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
         startedLoadingMovie = true
         viewModelScope.launch {
             loadDetails(id).join()
-            loadImage(details!!.portada).join()
+            if (details!!.portada != null) {
+                loadImage(details!!.portada!!).join()
+            }
             loadActors(id).join()
             details!!.actores = actors
             isDisplayingDetails = true

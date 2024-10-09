@@ -5,7 +5,7 @@ import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 data class DetailsMovie(
     val titulo_original: String,
     val titulo: String,
-    val portada: String,
+    val portada: String?,
     val resumen: String,
     val generos: List<Genero>,
     var actores: List<Actor>,

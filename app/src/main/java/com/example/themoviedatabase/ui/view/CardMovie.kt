@@ -20,23 +20,40 @@ import com.example.themoviedatabase.data.dto.Movie
 @Composable
 fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
     ElevatedCard(onClick = { onMovieClick(movie.id) }, modifier = Modifier.padding(5.dp)) {
-        Column {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                error = painterResource(R.drawable.placeholder),
-                placeholder = painterResource(R.drawable.placeholder),
-                model = "https://image.tmdb.org/t/p/w500/${movie.image}",
-                contentDescription = null,
-            )
-        }
-        Text(
-            modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp),
-            fontSize = 16.sp,
-            text = movie.title,
-            fontWeight = FontWeight.Bold,
+        ImagenPelicula(movie)
+        TituloPelicula(movie)
+        FechaLanzamiento(movie)
+    }
+}
+
+@Composable
+private fun TituloPelicula(movie: Movie) {
+    Text(
+        modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 2.dp),
+        fontSize = 16.sp,
+        text = movie.title,
+        fontWeight = FontWeight.Bold,
+    )
+}
+
+@Composable
+private fun ImagenPelicula(movie: Movie) {
+    Column {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            error = painterResource(R.drawable.placeholder),
+            placeholder = painterResource(R.drawable.placeholder),
+            model = "https://image.tmdb.org/t/p/w500/${movie.image}",
+            contentDescription = null,
         )
+    }
+}
+
+@Composable
+private fun FechaLanzamiento(movie: Movie) {
+    if (movie.fecha_lanzamiento.isNotBlank()) {
         Text(
-            modifier = Modifier.padding(start = 10.dp, bottom = 10.dp, top = 2.dp),
+            modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
             fontSize = 14.sp,
             fontWeight = FontWeight.Light,
             text = movie.getAnioLanzamiento().toString()

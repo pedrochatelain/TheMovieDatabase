@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,41 +74,50 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
                     )
                 }
                 Rating(movie)
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 5.dp)) {
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 18.dp)
-                            .size(19.dp),
-                        tint = MaterialTheme.colorScheme.primary,
-                        imageVector = Icons.Sharp.DateRange,
-                        contentDescription = ""
-                    )
-                    Text(
-                        text = movie.fecha_lanzamiento,
-                        modifier = Modifier.padding(start = 6.dp),
-                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                        fontWeight = FontWeight.Light
-                    )
-                }
+                FechaLanzamiento(movie)
                 Text(
                     text = movie.resumen,
                     modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
                     fontSize = 18.sp
                 )
                 Genres(movie)
-                Text(
-                    text = "Cast",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(top = 40.dp, bottom = 10.dp)
-                        .padding(start = 20.dp)
-                )
-                Cast(movie)
+                if (viewModel.details!!.actores.isNotEmpty()) {
+                    Text(
+                        text = "Cast",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(top = 40.dp, bottom = 10.dp)
+                            .padding(start = 20.dp)
+                    )
+                    Cast(movie)
+                }
             }
         }
     } else {
         Loading()
+    }
+}
+
+@Composable
+private fun FechaLanzamiento(movie: DetailsMovie) {
+    if (movie.fecha_lanzamiento.isNotBlank()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 5.dp)) {
+            Icon(
+                modifier = Modifier
+                    .padding(start = 18.dp)
+                    .size(19.dp),
+                tint = MaterialTheme.colorScheme.primary,
+                imageVector = Icons.Sharp.DateRange,
+                contentDescription = ""
+            )
+            Text(
+                text = movie.fecha_lanzamiento,
+                modifier = Modifier.padding(start = 6.dp),
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                fontWeight = FontWeight.Light
+            )
+        }
     }
 }
 
@@ -122,32 +133,18 @@ private fun Cast(movie: DetailsMovie) {
 @Composable
 private fun PictureMovie(viewModel: DetailsMovieViewModel) {
     Box(modifier = Modifier.padding(bottom = 30.dp)){
-        Image(
-            modifier = Modifier
-                .height(220.dp)
-//                .clip(RoundedCornerShape(20.dp))
-                .fillMaxWidth(),
-            contentScale = ContentScale.FillBounds,
-            bitmap = viewModel.image,
-            contentDescription = ""
-        )
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .align(Alignment.BottomEnd)
-//                .height(10.dp)
-//                .drawWithCache {
-//                    onDrawWithContent {
-//                        drawContent()
-//                        drawRect(
-//                            Brush.verticalGradient(
-//                                0f to Color(0xFFFFFBFE).copy(alpha = 0F),
-//                                .5F to Color(0xFFFFFBFE)
-//                            )
-//                        )
-//                    }
-//                }
-//        ) {}
+        if (viewModel.image != null) {
+            Image(
+                modifier = Modifier
+                    .height(220.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.FillBounds,
+                bitmap = viewModel.image!!,
+                contentDescription = ""
+            )
+        } else {
+            Image(painter = painterResource(R.drawable.placeholder), "", modifier = Modifier.fillMaxSize())
+        }
     }
 }
 
