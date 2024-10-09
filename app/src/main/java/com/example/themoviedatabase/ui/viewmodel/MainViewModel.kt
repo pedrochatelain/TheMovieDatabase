@@ -11,12 +11,14 @@ import com.example.themoviedatabase.data.Repository
 import com.example.themoviedatabase.data.dto.Movie
 import com.example.themoviedatabase.data.dto.ResponseGetPopularMovies
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+    private var search: Job = Job()
     var searching by mutableStateOf(false)
     var errorLoadMoreMovies by mutableStateOf(false)
     private var page: Int = 1
@@ -25,6 +27,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     var moviesLoaded by mutableStateOf(false)
     var movies = mutableStateListOf<Movie>()
     var loading by mutableStateOf(true)
+    var searchedMovie by mutableStateOf("")
 
     fun loadMovies() {
         error = false
@@ -43,8 +46,12 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     }
 
     fun searchMovie(titleMovie: String) {
-        searching = true
-        viewModelScope.launch {
+        if (search.isActive) {
+            search.cancel()
+        }
+        searching = titleMovie.isNotBlank()
+        searchedMovie = titleMovie
+        search = viewModelScope.launch {
             val response: ResponseGetPopularMovies = repository.searchMovies(titleMovie)
             if (response.isSuccessful) {
                 movies = SnapshotStateList()
@@ -56,6 +63,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
             searching = false
         }
     }
+
     fun loadMoreMovies() {
         loadingMoreMovies = true
         errorLoadMoreMovies = false

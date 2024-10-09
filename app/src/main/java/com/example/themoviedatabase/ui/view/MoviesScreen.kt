@@ -25,10 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -128,8 +124,6 @@ private fun ListOfMovies(
 
 @Composable
 private fun BuscadorPeliculas(viewModel: MainViewModel) {
-    var text by remember { mutableStateOf("") }
-
     val focusManager = LocalFocusManager.current
     val isKeyboardOpen = keyboardAsState().value
 
@@ -142,13 +136,9 @@ private fun BuscadorPeliculas(viewModel: MainViewModel) {
         modifier = Modifier
             .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth(),
-        value = text,
+        value = viewModel.searchedMovie,
         placeholder = { Text("Search movie") },
-        onValueChange = {
-            text = it
-            viewModel.searching = text.isNotBlank()
-            viewModel.searchMovie(text)
-        },
+        onValueChange = {viewModel.searchMovie(it) },
         leadingIcon = { Icon(Icons.Sharp.Search, "s") })
 }
 
