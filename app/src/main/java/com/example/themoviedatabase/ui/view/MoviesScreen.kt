@@ -1,5 +1,7 @@
 package com.example.themoviedatabase.ui.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,35 +92,40 @@ private fun ErrorScreen(viewModel: MainViewModel) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ListOfMovies(
     viewModel: MainViewModel,
     onMovieClick: (movieID: Int) -> Unit
 ) {
     if ( ! viewModel.isLoadingSearch) {
-        LazyVerticalGrid(
-            modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
+        CompositionLocalProvider(
+            LocalOverscrollConfiguration provides null
         ) {
-            items(items = viewModel.movies) { movie ->
-                CardMovie(movie, onMovieClick)
-            }
-            item(span = { GridItemSpan(2) }) {
-                // triggers when scroll to bottom of list
-                LaunchedEffect(Unit) {
-                    viewModel.loadMoreMovies()
+            LazyVerticalGrid(
+                modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
+            ) {
+                items(items = viewModel.movies) { movie ->
+                    CardMovie(movie, onMovieClick)
                 }
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(10.dp)
-                ) {
-                    if (viewModel.loadingMoreMovies) {
-                        Row(modifier = Modifier.padding(bottom = 50.dp)) {
-                            CircularProgressIndicator()
-                        }
+                item(span = { GridItemSpan(2) }) {
+                    // triggers when scroll to bottom of list
+                    LaunchedEffect(Unit) {
+                        viewModel.loadMoreMovies()
                     }
-                    if (viewModel.errorLoadMoreMovies) {
-                        ErrorLoadingMoreMovies(viewModel)
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+                        if (viewModel.loadingMoreMovies) {
+                            Row(modifier = Modifier.padding(bottom = 50.dp)) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        if (viewModel.errorLoadMoreMovies) {
+                            ErrorLoadingMoreMovies(viewModel)
+                        }
                     }
                 }
             }
