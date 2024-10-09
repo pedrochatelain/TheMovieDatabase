@@ -7,9 +7,7 @@ import retrofit2.Response
 
 interface MyDataSource {
 
-    suspend fun getMovies(): Response<MovieAPI>
-
-    suspend fun searchMovies(titleMovie: String): Response<MovieAPI>
+    suspend fun getMovies(titleMovie: String = ""): Response<MovieAPI>
 
     suspend fun getMoreMovies(page: Int): Response<MovieAPI>
 

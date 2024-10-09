@@ -18,17 +18,21 @@ class Retrofit: MyDataSource {
         .build()
     private var service = retrofit.create(MovieService::class.java)
 
-    override suspend fun getMovies(): Response<MovieAPI> {
-        return service.getPopularMovies(API_KEY)
+    override suspend fun getMovies(titleMovie: String): Response<MovieAPI> {
+        if (titleMovie.isBlank()) {
+            return service.getPopularMovies(API_KEY)
+        } else {
+            val service = searchService()
+            return service.search(API_KEY, titleMovie)
+        }
     }
 
-    override suspend fun searchMovies(titleMovie: String): Response<MovieAPI> {
+    private fun searchService(): SearchService {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/3/search/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        var service = retrofit.create(SearchService::class.java)
-        return service.searchMovies(API_KEY, titleMovie)
+        return retrofit.create(SearchService::class.java)
     }
 
     override suspend fun getMoreMovies(page: Int): Response<MovieAPI> {
@@ -54,7 +58,7 @@ interface MovieService {
 
 interface SearchService {
     @GET("movie")
-    suspend fun searchMovies(@Query("api_key") apiKey: String, @Query("query") query: String): Response<MovieAPI>
+    suspend fun search(@Query("api_key") apiKey: String, @Query("query") query: String): Response<MovieAPI>
 }
 
 interface MoreMoviesService {

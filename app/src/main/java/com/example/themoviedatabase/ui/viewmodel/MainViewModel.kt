@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
         searching = titleMovie.isNotBlank()
         searchedMovie = titleMovie
         search = viewModelScope.launch {
-            val response: ResponseGetPopularMovies = repository.searchMovies(titleMovie)
+            val response: ResponseGetPopularMovies = repository.getMovies(titleMovie)
             if (response.isSuccessful) {
                 movies = SnapshotStateList()
                 movies.addAll(response.movies)

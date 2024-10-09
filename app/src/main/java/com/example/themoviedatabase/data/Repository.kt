@@ -12,23 +12,9 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(private val dataSource: MyDataSource)  {
 
-    suspend fun getMovies(): ResponseGetPopularMovies {
+    suspend fun getMovies(title: String = ""): ResponseGetPopularMovies {
         try {
-            val result: Response<MovieAPI> = dataSource.getMovies()
-            if (result.isSuccessful) {
-                return ResponseGetPopularMovies(
-                    movies = result.body()!!.movies,
-                    httpCode = 200,
-                    isSuccessful = true
-                )
-            }
-        } catch (_: Throwable) {}
-        return ResponseGetPopularMovies(httpCode = 500, isSuccessful = false)
-    }
-
-    suspend fun searchMovies(titleMovie: String): ResponseGetPopularMovies {
-        try {
-            val result: Response<MovieAPI> = dataSource.searchMovies(titleMovie)
+            val result: Response<MovieAPI> = dataSource.getMovies(title)
             if (result.isSuccessful) {
                 return ResponseGetPopularMovies(
                     movies = result.body()!!.movies,
