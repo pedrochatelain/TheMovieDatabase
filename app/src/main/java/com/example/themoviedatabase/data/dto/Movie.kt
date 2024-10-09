@@ -8,17 +8,17 @@ data class Movie(
     @SerializedName("original_title") val originalTitle: String,
     @SerializedName("title") val title: String,
     @SerializedName("poster_path") val image: String,
-    @SerializedName("release_date") val fecha_lanzamiento: String
+    @SerializedName("release_date") val fechaLanzamiento: String?
 ){
     override fun toString(): String {
         return "Language: $originalLanguage - Original title: $originalTitle"
     }
 
     fun getAnioLanzamiento(): Int {
-        if (fecha_lanzamiento.isNotBlank())
-            return fecha_lanzamiento.take(4).toInt()
+        return if (! fechaLanzamiento.isNullOrBlank())
+            fechaLanzamiento.take(4).toInt()
         else
-            return 0
+            0
     }
 
 }

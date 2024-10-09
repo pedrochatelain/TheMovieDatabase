@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.Clear
 import androidx.compose.material.icons.sharp.DateRange
 import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,10 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,47 +53,64 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
         viewModel.loadMovie(idMovie)
     }
     if (viewModel.isDisplayingDetails) {
-        val movie = viewModel.details!!
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            PictureMovie(viewModel)
-            Column {
-                Text(
-                    text = movie.titulo_original,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-                )
-                if (movie.titulo_original != movie.titulo) {
+        val movie = viewModel.details
+        if (movie == null) {
+            EmptyDetails()
+        } else {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                PictureMovie(viewModel)
+                Column {
                     Text(
-                        text = movie.titulo,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Light,
+                        text = movie.titulo_original,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
                     )
-                }
-                Rating(movie)
-                FechaLanzamiento(movie)
-                Text(
-                    text = movie.resumen,
-                    modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-                    fontSize = 18.sp
-                )
-                Genres(movie)
-                if (viewModel.details!!.actores.isNotEmpty()) {
+                    if (movie.titulo_original != movie.titulo) {
+                        Text(
+                            text = movie.titulo,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Light,
+                            modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                        )
+                    }
+                    Rating(movie)
+                    FechaLanzamiento(movie)
                     Text(
-                        text = "Cast",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(top = 40.dp, bottom = 10.dp)
-                            .padding(start = 20.dp)
+                        text = movie.resumen,
+                        modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+                        fontSize = 18.sp
                     )
-                    Cast(movie)
+                    Genres(movie)
+                    if (viewModel.details!!.actores.isNotEmpty()) {
+                        Text(
+                            text = "Cast",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(top = 40.dp, bottom = 10.dp)
+                                .padding(start = 20.dp)
+                        )
+                        Cast(movie)
+                    }
                 }
             }
         }
     } else {
         Loading()
+    }
+}
+
+@Composable
+fun EmptyDetails() {
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "No movie data", fontSize = MaterialTheme.typography.headlineMedium.fontSize)
+        Icon(
+            modifier = Modifier.size(50.dp),
+            contentDescription = "",
+            imageVector = Icons.Sharp.Clear,
+            tint = MaterialTheme.colorScheme.error
+        )
     }
 }
 

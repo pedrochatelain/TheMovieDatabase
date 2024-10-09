@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.FileNotFoundException
 import java.net.URL
 import javax.inject.Inject
 
@@ -43,12 +44,14 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
         }
     }
 
-    private fun loadImage(poster: String): Job {
+    private fun loadImage(poster: String?): Job {
         return viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val url = URL("https://image.tmdb.org/t/p/original/${poster}")
-                val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                image = bitmap.asImageBitmap()
+                try {
+                    val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                    image = bitmap.asImageBitmap()
+                } catch (_: FileNotFoundException){}
             }
         }
     }
@@ -57,11 +60,9 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
         startedLoadingMovie = true
         viewModelScope.launch {
             loadDetails(id).join()
-            if (details!!.portada != null) {
-                loadImage(details!!.portada!!).join()
-            }
+            loadImage(details?.portada).join()
             loadActors(id).join()
-            details!!.actores = actors
+            details?.actores = actors
             isDisplayingDetails = true
         }
     }

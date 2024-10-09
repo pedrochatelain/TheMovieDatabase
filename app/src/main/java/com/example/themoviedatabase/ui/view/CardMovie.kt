@@ -51,7 +51,7 @@ private fun ImagenPelicula(movie: Movie) {
 
 @Composable
 private fun FechaLanzamiento(movie: Movie) {
-    if (movie.fecha_lanzamiento.isNotBlank()) {
+    if ( ! movie.fechaLanzamiento.isNullOrBlank()) {
         Text(
             modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
             fontSize = 14.sp,
