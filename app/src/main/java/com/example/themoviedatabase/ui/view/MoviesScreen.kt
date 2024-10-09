@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -55,8 +56,13 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
             when {
                 viewModel.loading -> CircularProgressIndicator()
                 viewModel.moviesLoaded -> {
-                    BuscadorPeliculas(viewModel)
-                    ListOfMovies(viewModel, onMovieClick)
+                    Column(
+                      verticalArrangement = Arrangement.Top,
+                      modifier = Modifier.fillMaxHeight()
+                    ) {
+                        BuscadorPeliculas(viewModel)
+                        ListOfMovies(viewModel, onMovieClick)
+                    }
                 }
                 viewModel.error -> ErrorScreen(viewModel)
             }
