@@ -31,6 +31,10 @@ class Retrofit(
         return moviesService.getMovies(page)
     }
 
+    override suspend fun searchMoreMovies(movieTitle: String, page: Int): Response<MovieAPI> {
+        return searchService.search(movieTitle, page)
+    }
+
     override suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI> {
         return detailsMovieService.getMovieDetails(id)
     }

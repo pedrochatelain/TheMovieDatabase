@@ -11,6 +11,8 @@ interface MoviesDataSource {
 
     suspend fun getMoreMovies(page: Int): Response<MovieAPI>
 
+    suspend fun searchMoreMovies(movieTitle: String, page: Int): Response<MovieAPI>
+
     suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI>
 
     suspend fun getActors(movieID: Int): Response<ActorsAPI>

@@ -11,7 +11,11 @@ class SearchService {
 
     private interface SearchService {
         @GET("movie")
-        suspend fun search(@Query("api_key") apiKey: String, @Query("query") query: String): Response<MovieAPI>
+        suspend fun search(
+            @Query("api_key") apiKey: String,
+            @Query("query") query: String,
+            @Query("page") page: Int?
+        ): Response<MovieAPI>
     }
 
     private val API_KEY: String = "7cfd73ddaed83f34b0dfc2d546213e40"
@@ -24,7 +28,11 @@ class SearchService {
     private val service = retrofit.create(SearchService::class.java)
 
     suspend fun search(titleMovie: String): Response<MovieAPI> {
-        return service.search(API_KEY, titleMovie)
+        return service.search(API_KEY, titleMovie, null)
+    }
+
+    suspend fun search(titleMovie: String, page: Int): Response<MovieAPI> {
+        return service.search(API_KEY, titleMovie, page)
     }
 
 }

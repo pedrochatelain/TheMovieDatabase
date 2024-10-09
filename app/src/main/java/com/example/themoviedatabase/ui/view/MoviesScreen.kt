@@ -88,7 +88,7 @@ private fun ListOfMovies(
     viewModel: MainViewModel,
     onMovieClick: (movieID: Int) -> Unit
 ) {
-    if ( ! viewModel.searching) {
+    if ( ! viewModel.isLoadingSearch) {
         LazyVerticalGrid(
             modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
         ) {
@@ -117,7 +117,7 @@ private fun ListOfMovies(
             }
         }
     } else {
-        SearchingScreen(viewModel)
+        SearchingScreen()
     }
 
 }
@@ -143,7 +143,7 @@ private fun BuscadorPeliculas(viewModel: MainViewModel) {
 }
 
 @Composable
-fun SearchingScreen(viewModel: MainViewModel) {
+fun SearchingScreen() {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Buscando...")
         CircularProgressIndicator()
