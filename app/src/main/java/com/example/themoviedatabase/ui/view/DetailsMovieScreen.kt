@@ -30,10 +30,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,59 +47,68 @@ import coil.compose.AsyncImage
 import com.example.themoviedatabase.R
 import com.example.themoviedatabase.data.dto.Actor
 import com.example.themoviedatabase.data.dto.DetailsMovie
+import com.example.themoviedatabase.data.dto.Genero
 import com.example.themoviedatabase.ui.viewmodel.DetailsMovieViewModel
 
 @Composable
 fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
-    if (! viewModel.startedLoadingMovie) {
-        viewModel.loadMovie(idMovie)
-    }
-    if (viewModel.isDisplayingDetails) {
-        val movie = viewModel.details
-        if (movie == null) {
-            EmptyDetails()
-        } else {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                PictureMovie(viewModel)
-                Column {
-                    Text(
-                        text = movie.titulo_original,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-                    )
-                    if (movie.titulo_original != movie.titulo) {
-                        Text(
-                            text = movie.titulo,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Light,
-                            modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-                        )
-                    }
-                    Rating(movie)
-                    FechaLanzamiento(movie)
-                    Text(
-                        text = movie.resumen,
-                        modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-                        fontSize = 18.sp
-                    )
-                    Genres(movie)
-                    if (viewModel.details!!.actores.isNotEmpty()) {
-                        Text(
-                            text = "Cast",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .padding(top = 40.dp, bottom = 10.dp)
-                                .padding(start = 20.dp)
-                        )
-                        Cast(movie)
-                    }
-                }
-            }
-        }
+    // initialize view
+    LaunchedEffect(Unit) { viewModel.loadMovie(idMovie) }
+
+    if (viewModel.isLoading) {
+        LoadingScreen()
     } else {
-        Loading()
+        MovieDetails(viewModel.details)
+    }
+}
+
+@Composable
+private fun MovieDetails(movie: DetailsMovie?) {
+    if (movie == null) {
+        EmptyDetails()
+    } else {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 20.dp)
+        ) {
+            PictureMovie(movie.image)
+            TituloPelicula(movie.titulo, movie.titulo_original)
+            Rating(movie.rating)
+            FechaLanzamiento(movie.fecha_lanzamiento)
+            Resumen(movie.resumen)
+            Genres(movie.generos)
+            Cast(movie.actores)
+        }
+    }
+}
+
+@Composable
+private fun Resumen(resumen: String?) {
+    if ( ! resumen.isNullOrBlank()) {
+        Text(
+            text = resumen,
+            modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+            fontSize = 18.sp
+        )
+    }
+}
+
+@Composable
+private fun TituloPelicula(titulo: String, tituloOriginal: String) {
+    Text(
+        text = tituloOriginal,
+        fontSize = 26.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+    )
+    if (tituloOriginal != titulo) {
+        Text(
+            text = titulo,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Light,
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+        )
     }
 }
 
@@ -115,8 +126,8 @@ fun EmptyDetails() {
 }
 
 @Composable
-private fun FechaLanzamiento(movie: DetailsMovie) {
-    if (movie.fecha_lanzamiento.isNotBlank()) {
+private fun FechaLanzamiento(fechaLanzamiento: String) {
+    if (fechaLanzamiento.isNotBlank()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 5.dp)) {
             Icon(
                 modifier = Modifier
@@ -127,7 +138,7 @@ private fun FechaLanzamiento(movie: DetailsMovie) {
                 contentDescription = ""
             )
             Text(
-                text = movie.fecha_lanzamiento,
+                text = fechaLanzamiento,
                 modifier = Modifier.padding(start = 6.dp),
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                 fontWeight = FontWeight.Light
@@ -137,34 +148,51 @@ private fun FechaLanzamiento(movie: DetailsMovie) {
 }
 
 @Composable
-private fun Cast(movie: DetailsMovie) {
-    LazyRow(modifier = Modifier.padding(start = 20.dp, bottom = 20.dp)) {
-        items(items = movie.actores) { actor ->
-            ActorCard(actor)
+private fun Cast(actores: List<Actor>?) {
+    if ( ! actores.isNullOrEmpty()) {
+        Text(
+            text = "Cast",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+             .padding(top = 40.dp, bottom = 10.dp)
+             .padding(start = 20.dp)
+        )
+        LazyRow(
+          modifier = Modifier
+            .padding(start = 20.dp)
+        ){
+            items(items = actores) { actor ->
+                ActorCard(actor)
+            }
         }
     }
 }
 
 @Composable
-private fun PictureMovie(viewModel: DetailsMovieViewModel) {
+private fun PictureMovie(image: ImageBitmap?) {
     Box(modifier = Modifier.padding(bottom = 30.dp)){
-        if (viewModel.image != null) {
+        if (image != null) {
             Image(
                 modifier = Modifier
                     .height(220.dp)
                     .fillMaxWidth(),
                 contentScale = ContentScale.FillBounds,
-                bitmap = viewModel.image!!,
+                bitmap = image,
                 contentDescription = ""
             )
         } else {
-            Image(painter = painterResource(R.drawable.placeholder), "", modifier = Modifier.fillMaxSize())
+            Image(
+                painter = painterResource(R.drawable.placeholder),
+                "",
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
 
 @Composable
-private fun Rating(movie: DetailsMovie) {
+private fun Rating(rating: Double) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(top = 20.dp, bottom = 4.dp)
@@ -178,7 +206,7 @@ private fun Rating(movie: DetailsMovie) {
             contentDescription = ""
         )
         Text(
-            text = "${movie.rating}",
+            text = "$rating",
             modifier = Modifier.padding(start = 6.dp),
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
             fontWeight = FontWeight.Light
@@ -189,9 +217,9 @@ private fun Rating(movie: DetailsMovie) {
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun Genres(movie: DetailsMovie) {
+private fun Genres(generos: List<Genero>) {
     FlowRow(modifier = Modifier.padding(start = 20.dp, top = 10.dp), content = {
-        for (genero in movie.generos) {
+        for (genero in generos) {
             Box(
                 modifier = Modifier
                     .padding(top = 10.dp, end = 10.dp)
@@ -215,7 +243,7 @@ private fun Genres(movie: DetailsMovie) {
 
 @Composable
 @Preview
-private fun Loading() {
+private fun LoadingScreen() {
     Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             CircularProgressIndicator()
@@ -243,7 +271,6 @@ fun ActorCard(actor: Actor) {
             modifier = Modifier.padding(top = 5.dp),
             text = actor.nombre,
             fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-//            fontWeight = FontWeight.Light
         )
     }
 }
