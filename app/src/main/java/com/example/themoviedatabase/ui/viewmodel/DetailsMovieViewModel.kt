@@ -23,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsMovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+    private var isMovieSelected: Boolean = false
     var isLoading by mutableStateOf(true)
     var details by mutableStateOf<DetailsMovie?>(null)
 
@@ -52,11 +53,14 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
     }
 
     fun loadMovie(id: Int) {
-        viewModelScope.launch {
-            loadDetails(id).join()
-            loadImage(details?.portada).join()
-            loadActors(id).join()
-            isLoading = false
+        if ( ! isMovieSelected) { // flag to protect simultaneous taps on movies
+            isMovieSelected = true
+            viewModelScope.launch {
+                loadDetails(id).join()
+                loadImage(details?.portada).join()
+                loadActors(id).join()
+                isLoading = false
+            }
         }
     }
 
