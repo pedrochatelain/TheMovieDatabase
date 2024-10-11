@@ -1,6 +1,7 @@
 package com.example.themoviedatabase.ui.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,11 +53,30 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
                 when {
                     viewModel.loading     -> LoadingScreen()
                     viewModel.moviesReady -> ListOfMovies(onMovieClick)
+                    viewModel.noResults   -> NoResultsSearch()
                     viewModel.error       -> ErrorScreen()
                 }
             }
         }
     )
+}
+
+@Composable
+private fun NoResultsSearch(viewModel: MainViewModel = hiltViewModel()) {
+    Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
+        Image(
+            painter = painterResource(R.drawable.movie_no_results),
+            "",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+            modifier = Modifier.size(50.dp)
+        )
+        Text("No results found", fontSize = MaterialTheme.typography.titleLarge .fontSize, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
+        Button(
+            modifier = Modifier.padding(top = 30.dp),
+            onClick = { viewModel.backToPopularMovies() },
+            content = { Text("Back to popular movies") }
+        )
+    }
 }
 
 @Composable

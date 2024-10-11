@@ -27,25 +27,38 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     var searchedMovie by mutableStateOf("")
     var isLoadingMoreMovies by mutableStateOf(false)
     var errorLoadMoreMovies by mutableStateOf(false)
+    var noResults by mutableStateOf(false)
 
     fun initialize() {
         viewModelScope.launch {
-            loadMovies()
+            loadMovies().join()
             isInitialized = true
         }
     }
 
-    fun loadMovies() {
+    fun loadMovies(): Job {
         search = viewModelScope.launch {
             loading = true
             val response = repository.getMovies(searchedMovie)
             if (response.isSuccessful) {
                 movies = SnapshotStateList()
                 movies.addAll(response.movies)
-                moviesReady = true
+                checkResults()
             }
             else error = true
             loading = false
+        }
+        return search
+    }
+
+    private fun checkResults() {
+        if (movies.size > 0) {
+            moviesReady = true
+            noResults = false
+        }
+        else {
+            moviesReady = false
+            noResults = true
         }
     }
 
@@ -66,5 +79,10 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
 
     fun cancelSearch() {
         if (search.isActive) search.cancel()
+    }
+
+    fun backToPopularMovies() {
+        searchedMovie = ""
+        loadMovies()
     }
 }

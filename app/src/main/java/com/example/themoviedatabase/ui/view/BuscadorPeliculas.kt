@@ -23,7 +23,7 @@ import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
 fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
-    if (viewModel.moviesReady) {
+    if (viewModel.isInitialized) {
         val focusManager = LocalFocusManager.current
         val isKeyboardOpen = keyboardAsState().value
 
