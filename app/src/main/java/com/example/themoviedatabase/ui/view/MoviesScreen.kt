@@ -14,15 +14,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,16 +25,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.themoviedatabase.R
-import com.example.themoviedatabase.ui.keyboardAsState
 import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
@@ -158,33 +150,6 @@ private fun ErrorLoadingMoreMovies(viewModel: MainViewModel = hiltViewModel()) {
         ) {
             Text("Try again")
         }
-    }
-}
-
-@Composable
-private fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
-    if (viewModel.moviesReady) {
-        val focusManager = LocalFocusManager.current
-        val isKeyboardOpen = keyboardAsState().value
-
-        if (! isKeyboardOpen) {
-            focusManager.clearFocus()
-        }
-        OutlinedTextField(keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-            shape = MaterialTheme.shapes.extraLarge,
-            modifier = Modifier
-                .padding(bottom = 20.dp, start = 10.dp, end = 10.dp)
-                .fillMaxWidth(),
-            value = viewModel.searchedMovie,
-            placeholder = { Text("Search movie") },
-            onValueChange = {
-                viewModel.cancelSearch()
-                viewModel.searchedMovie = it
-                viewModel.loadMovies()
-            },
-            leadingIcon = { Icon(Icons.Sharp.Search, "s") }
-        )
     }
 }
 
