@@ -1,5 +1,6 @@
 package com.example.themoviedatabase.ui.view
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,15 +52,18 @@ import com.example.themoviedatabase.data.dto.DetailsMovie
 import com.example.themoviedatabase.data.dto.Genero
 import com.example.themoviedatabase.ui.viewmodel.DetailsMovieViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
     // initialize view
     LaunchedEffect(Unit) { viewModel.loadMovie(idMovie) }
 
-    if (viewModel.isLoading) {
-        LoadingScreen()
-    } else {
-        MovieDetails(viewModel.details)
+    Scaffold {
+        if (viewModel.isLoading) {
+            LoadingScreen()
+        } else {
+            MovieDetails(viewModel.details)
+        }
     }
 }
 

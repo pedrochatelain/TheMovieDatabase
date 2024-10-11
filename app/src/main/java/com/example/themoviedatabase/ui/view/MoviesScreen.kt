@@ -2,7 +2,6 @@ package com.example.themoviedatabase.ui.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,14 +50,19 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
             viewModel.initialize()
         }
     }
-    Column {
-        BuscadorPeliculas()
-        when {
-            viewModel.loading     -> LoadingScreen()
-            viewModel.moviesReady -> ListOfMovies(onMovieClick)
-            viewModel.error       -> ErrorScreen()
+    Scaffold(
+        topBar = { TopBar() },
+        content = { padding ->
+            Column(Modifier.padding(padding)) {
+                BuscadorPeliculas()
+                when {
+                    viewModel.loading     -> LoadingScreen()
+                    viewModel.moviesReady -> ListOfMovies(onMovieClick)
+                    viewModel.error       -> ErrorScreen()
+                }
+            }
         }
-    }
+    )
 }
 
 @Composable
@@ -170,7 +174,7 @@ private fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             shape = MaterialTheme.shapes.extraLarge,
             modifier = Modifier
-                .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                .padding(bottom = 20.dp, start = 10.dp, end = 10.dp)
                 .fillMaxWidth(),
             value = viewModel.searchedMovie,
             placeholder = { Text("Search movie") },
@@ -187,14 +191,16 @@ private fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
 @Preview
 @Composable
 private fun TopBar() {
-    Row(modifier = Modifier
-        .background(color = MaterialTheme.colorScheme.primary)
-        .fillMaxWidth()
-        .padding(14.dp)) {
+    Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(20.dp)
+    ){
         Text(
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            text = "My movies")
+            text = "My movies"
+        )
     }
 }
