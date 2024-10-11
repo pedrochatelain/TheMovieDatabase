@@ -26,18 +26,22 @@ class Repository @Inject constructor(private val dataSource: MoviesDataSource)  
         return ResponseGetMovies(httpCode = 500, isSuccessful = false)
     }
 
-    suspend fun getMoreMovies(page: Int): ResponseGetMovies {
-        try {
-            val result: Response<MovieAPI> = dataSource.getMoreMovies(page)
-            if (result.isSuccessful) {
-                return ResponseGetMovies(
-                    movies = result.body()!!.movies,
-                    httpCode = 200,
-                    isSuccessful = true
-                )
-            }
-        } catch (_: Throwable) {}
-        return ResponseGetMovies(httpCode = 500, isSuccessful = false)
+    suspend fun getMoreMovies(movieTitle: String, page: Int): ResponseGetMovies {
+        if (movieTitle.isNotBlank()) {
+            return searchMoreMovies(movieTitle, page)
+        } else {
+            try {
+                val result: Response<MovieAPI> = dataSource.getMoreMovies(page)
+                if (result.isSuccessful) {
+                    return ResponseGetMovies(
+                        movies = result.body()!!.movies,
+                        httpCode = 200,
+                        isSuccessful = true
+                    )
+                }
+            } catch (_: Throwable) {}
+            return ResponseGetMovies(httpCode = 500, isSuccessful = false)
+        }
     }
 
     suspend fun searchMoreMovies(movieTitle: String, page: Int): ResponseGetMovies {

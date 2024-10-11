@@ -6,9 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -45,37 +45,77 @@ import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
 fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
-    if (! viewModel.moviesLoaded) {
-        viewModel.loadMovies()
+    // init screen
+    LaunchedEffect(Unit) {
+        if ( ! viewModel.isInitialized) {
+            viewModel.initialize()
+        }
     }
-    Scaffold(topBar = { TopBar() }) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column {
+        BuscadorPeliculas()
+        when {
+            viewModel.loading     -> LoadingScreen()
+            viewModel.moviesReady -> ListOfMovies(onMovieClick)
+            viewModel.error       -> ErrorScreen()
+        }
+    }
+}
+
+@Composable
+private fun LoadingScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ListOfMovies(
+    onMovieClick: (movieID: Int) -> Unit,
+    viewModel: MainViewModel = hiltViewModel()
+) {
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp)
         ) {
-            when {
-                viewModel.loading -> CircularProgressIndicator()
-                viewModel.moviesLoaded -> {
-                    Column(
-                      verticalArrangement = Arrangement.Top,
-                      modifier = Modifier.fillMaxHeight()
-                    ) {
-                        BuscadorPeliculas(viewModel)
-                        ListOfMovies(viewModel, onMovieClick)
+            items(items = viewModel.movies) { movie ->
+                CardMovie(movie, onMovieClick)
+            }
+            item(span = { GridItemSpan(2) }) {
+                // triggers when scroll to bottom of list
+                LaunchedEffect(Unit) {
+                    viewModel.loadMoreMovies()
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.height(150.dp)
+                ) {
+                    if (viewModel.errorLoadMoreMovies) {
+                        ErrorLoadingMoreMovies()
+                    }
+                    if (viewModel.isLoadingMoreMovies && viewModel.movies.size > 0) {
+                        CircularProgressIndicator()
                     }
                 }
-                viewModel.error -> ErrorScreen(viewModel)
             }
         }
     }
 }
 
 @Composable
-private fun ErrorScreen(viewModel: MainViewModel) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+private fun ErrorScreen(viewModel: MainViewModel = hiltViewModel()) {
+    Column(
+      modifier = Modifier.fillMaxSize(),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
+    ) {
         Icon(
             painter = painterResource(R.drawable.wifi_off_24px),
             contentDescription = "",
@@ -85,102 +125,62 @@ private fun ErrorScreen(viewModel: MainViewModel) {
         Text("No internet connection", fontSize = 20.sp, modifier = Modifier.padding(top = 10.dp))
         Button(
             onClick = { viewModel.loadMovies() },
-            modifier = Modifier.padding(top = 50.dp)
+            modifier = Modifier.padding(top = 30.dp)
         ) {
             Text("Try again")
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ListOfMovies(
-    viewModel: MainViewModel,
-    onMovieClick: (movieID: Int) -> Unit
-) {
-    if ( ! viewModel.isLoadingSearch) {
-        CompositionLocalProvider(
-            LocalOverscrollConfiguration provides null
-        ) {
-            LazyVerticalGrid(
-                modifier = Modifier.padding(5.dp), columns = GridCells.Adaptive(minSize = 128.dp)
-            ) {
-                items(items = viewModel.movies) { movie ->
-                    CardMovie(movie, onMovieClick)
-                }
-                item(span = { GridItemSpan(2) }) {
-                    // triggers when scroll to bottom of list
-                    LaunchedEffect(Unit) {
-                        viewModel.loadMoreMovies()
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .padding(10.dp)
-                    ) {
-                        if (viewModel.loadingMoreMovies) {
-                            Row(modifier = Modifier.padding(bottom = 50.dp)) {
-                                CircularProgressIndicator()
-                            }
-                        }
-                        if (viewModel.errorLoadMoreMovies) {
-                            ErrorLoadingMoreMovies(viewModel)
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        SearchingScreen()
-    }
-
-}
-
-@Composable
-private fun BuscadorPeliculas(viewModel: MainViewModel) {
-    val focusManager = LocalFocusManager.current
-    val isKeyboardOpen = keyboardAsState().value
-
-    if (! isKeyboardOpen) {
-        focusManager.clearFocus()
-    }
-    OutlinedTextField(keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        shape = MaterialTheme.shapes.extraLarge,
-        modifier = Modifier
-            .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth(),
-        value = viewModel.searchedMovie,
-        placeholder = { Text("Search movie") },
-        onValueChange = {viewModel.searchMovie(it) },
-        leadingIcon = { Icon(Icons.Sharp.Search, "s") })
-}
-
-@Composable
-fun SearchingScreen() {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Buscando...")
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun ErrorLoadingMoreMovies(viewModel: MainViewModel) {
+private fun ErrorLoadingMoreMovies(viewModel: MainViewModel = hiltViewModel()) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painter = painterResource(R.drawable.wifi_off_24px),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(35.dp)
-                    .padding(end = 10.dp),
-                tint = MaterialTheme.colorScheme.error
-            )
-            Text("No internet connection", fontSize = 18.sp)
-        }
-        Button(onClick = { viewModel.loadMoreMovies() }, modifier = Modifier.padding(5.dp)) {
+        Icon(
+            painter = painterResource(R.drawable.wifi_off_24px),
+            contentDescription = "",
+            modifier = Modifier.size(35.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Text(
+            text = "No internet connection",
+            fontSize = MaterialTheme.typography.titleMedium.fontSize
+        )
+        Button(
+            onClick = {
+                viewModel.errorLoadMoreMovies = false
+                viewModel.loadMoreMovies()
+            },
+            modifier = Modifier.padding(5.dp)
+        ) {
             Text("Try again")
         }
+    }
+}
+
+@Composable
+private fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
+    if (viewModel.moviesReady) {
+        val focusManager = LocalFocusManager.current
+        val isKeyboardOpen = keyboardAsState().value
+
+        if (! isKeyboardOpen) {
+            focusManager.clearFocus()
+        }
+        OutlinedTextField(keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            shape = MaterialTheme.shapes.extraLarge,
+            modifier = Modifier
+                .padding(top = 20.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                .fillMaxWidth(),
+            value = viewModel.searchedMovie,
+            placeholder = { Text("Search movie") },
+            onValueChange = {
+                viewModel.cancelSearch()
+                viewModel.searchedMovie = it
+                viewModel.loadMovies()
+            },
+            leadingIcon = { Icon(Icons.Sharp.Search, "s") }
+        )
     }
 }
 

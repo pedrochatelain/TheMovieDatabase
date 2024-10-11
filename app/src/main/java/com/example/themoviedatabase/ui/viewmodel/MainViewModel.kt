@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.themoviedatabase.data.Repository
 import com.example.themoviedatabase.data.dto.Movie
-import com.example.themoviedatabase.data.dto.ResponseGetMovies
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -19,69 +18,53 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
     private var search: Job = Job()
-    var isLoadingSearch by mutableStateOf(false)
-    var errorLoadMoreMovies by mutableStateOf(false)
     private var page: Int = 1
-    var loadingMoreMovies by mutableStateOf(true)
+    var isInitialized by mutableStateOf(false)
+    var moviesReady by mutableStateOf(false)
     var error by mutableStateOf(false)
-    var moviesLoaded by mutableStateOf(false)
     var movies = mutableStateListOf<Movie>()
     var loading by mutableStateOf(true)
     var searchedMovie by mutableStateOf("")
+    var isLoadingMoreMovies by mutableStateOf(false)
+    var errorLoadMoreMovies by mutableStateOf(false)
+
+    fun initialize() {
+        viewModelScope.launch {
+            loadMovies()
+            isInitialized = true
+        }
+    }
 
     fun loadMovies() {
-        error = false
-        loading = true
-        viewModelScope.launch {
-            val response: ResponseGetMovies = repository.getMovies()
+        search = viewModelScope.launch {
+            loading = true
+            val response = repository.getMovies(searchedMovie)
             if (response.isSuccessful) {
+                movies = SnapshotStateList()
                 movies.addAll(response.movies)
-                moviesLoaded = true
+                moviesReady = true
             }
-            else {
-                error = true
-            }
+            else error = true
             loading = false
         }
     }
 
-    fun searchMovie(titleMovie: String) {
-        if (search.isActive) {
-            search.cancel()
-        }
-        isLoadingSearch = true
-        searchedMovie = titleMovie
-        search = viewModelScope.launch {
-            val response: ResponseGetMovies = repository.getMovies(titleMovie)
-            if (response.isSuccessful) {
-                movies = SnapshotStateList()
-                movies.addAll(response.movies)
-                page = 1
-            }
-            else {
-                error = true
-            }
-            isLoadingSearch = false
-        }
-    }
-
     fun loadMoreMovies() {
-        loadingMoreMovies = true
-        errorLoadMoreMovies = false
-        lateinit var response: ResponseGetMovies
         viewModelScope.launch {
-            if (searchedMovie.isNotBlank()) {
-                response = repository.searchMoreMovies(searchedMovie, ++page)
-            } else {
-                response = repository.getMoreMovies(++page)
-            }
+            isLoadingMoreMovies = true
+            val response = repository.getMoreMovies(searchedMovie, ++page)
             if (response.isSuccessful) {
                 movies.addAll(response.movies)
+                errorLoadMoreMovies = false
             } else {
                 errorLoadMoreMovies = true
                 --page
             }
-            loadingMoreMovies = false
+            isLoadingMoreMovies = false
         }
+    }
+
+    fun cancelSearch() {
+        if (search.isActive) search.cancel()
     }
 }
