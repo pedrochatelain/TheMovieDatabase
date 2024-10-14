@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.themoviedatabase.data.Repository
@@ -28,6 +29,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     var isLoadingMoreMovies by mutableStateOf(false)
     var errorLoadMoreMovies by mutableStateOf(false)
     var noResults by mutableStateOf(false)
+    val focusRequester = FocusRequester()
 
     fun initialize() {
         viewModelScope.launch {
@@ -85,4 +87,9 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
         searchedMovie = ""
         loadMovies()
     }
+
+    fun focusSearchBox() {
+        focusRequester.requestFocus()
+    }
+
 }

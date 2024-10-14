@@ -15,8 +15,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,7 +29,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +48,7 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
         }
     }
     Scaffold(
+        floatingActionButton = { SearchButton() },
         topBar = { TopBar() },
         content = { padding ->
             Column(Modifier.padding(padding)) {
@@ -59,6 +62,19 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
             }
         }
     )
+}
+
+@Composable
+private fun SearchButton(viewModel: MainViewModel = hiltViewModel()) {
+    if (viewModel.isInitialized) {
+        FloatingActionButton(
+            modifier = Modifier.size(65.dp),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            onClick = { viewModel.focusSearchBox() },
+            content = { Icon(imageVector = Icons.Sharp.Search, "", modifier = Modifier.size(30.dp)) }
+        )
+    }
 }
 
 @Composable
