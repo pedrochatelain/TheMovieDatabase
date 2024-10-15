@@ -20,11 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.themoviedatabase.R
 import com.example.themoviedatabase.ui.keyboardAsState
 import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
@@ -55,13 +57,13 @@ fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
                 text = viewModel.searchedMovie,
                 selection = TextRange(viewModel.searchedMovie.length)
             ),
-            placeholder = { Text("Search movie") },
+            placeholder = { Text(stringResource(R.string.placeholder_search_box)) },
             onValueChange = {
                 viewModel.cancelSearch()
                 viewModel.searchedMovie = it.text
                 viewModel.loadMovies()
             },
-            leadingIcon = { Icon(Icons.Sharp.Search, "s") },
+            leadingIcon = { Icon(Icons.Sharp.Search, stringResource(R.string.content_description_icon_search) ) },
             trailingIcon = { ButtonClearText() }
         )
     }
@@ -72,7 +74,7 @@ private fun ButtonClearText(viewModel: MainViewModel = hiltViewModel()) {
     if (viewModel.searchedMovie.isNotBlank()) {
         IconButton(
             modifier = Modifier.padding(end = 10.dp),
-            content = { Icon(imageVector = Icons.Sharp.Clear, "") },
+            content = { Icon(imageVector = Icons.Sharp.Clear, stringResource(R.string.content_description_icon_clear_searchbox)) },
             onClick = {
                 viewModel.searchedMovie = ""
                 viewModel.loadMovies()

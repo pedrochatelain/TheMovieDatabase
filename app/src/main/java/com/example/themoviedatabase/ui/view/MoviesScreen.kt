@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,8 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -70,7 +69,7 @@ private fun SearchButton(viewModel: MainViewModel = hiltViewModel()) {
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = { viewModel.focusSearchBox() },
-            content = { Icon(imageVector = Icons.Sharp.Search, "") }
+            content = { Icon(imageVector = Icons.Sharp.Search, stringResource(R.string.content_description_icon_search)) }
         )
     }
 }
@@ -80,15 +79,15 @@ private fun NoResultsSearch(viewModel: MainViewModel = hiltViewModel()) {
     Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
         Image(
             painter = painterResource(R.drawable.movie_no_results),
-            "",
+            contentDescription =  stringResource(R.string.content_description_image_not_found_movie),
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
             modifier = Modifier.size(50.dp)
         )
-        Text("No results found", fontSize = MaterialTheme.typography.titleLarge .fontSize, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
+        Text(stringResource(R.string.no_results_found), fontSize = MaterialTheme.typography.titleLarge .fontSize, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
         Button(
             modifier = Modifier.padding(top = 30.dp),
             onClick = { viewModel.backToPopularMovies() },
-            content = { Text("Back to popular movies") }
+            content = { Text(stringResource(R.string.button_back_to_popular_movies)) }
         )
     }
 }
@@ -151,16 +150,16 @@ private fun ErrorScreen(viewModel: MainViewModel = hiltViewModel()) {
     ) {
         Icon(
             painter = painterResource(R.drawable.wifi_off_24px),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.icon_wifi_off),
             modifier = Modifier.size(60.dp),
             tint = MaterialTheme.colorScheme.error
         )
-        Text("No internet connection", fontSize = 20.sp, modifier = Modifier.padding(top = 10.dp))
+        Text(stringResource(R.string.no_internet_connection), fontSize = 20.sp, modifier = Modifier.padding(top = 10.dp))
         Button(
             onClick = { viewModel.loadMovies() },
             modifier = Modifier.padding(top = 30.dp)
         ) {
-            Text("Try again")
+            Text(stringResource(R.string.button_try_again_internet_connection))
         }
     }
 }
@@ -170,12 +169,12 @@ private fun ErrorLoadingMoreMovies(viewModel: MainViewModel = hiltViewModel()) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             painter = painterResource(R.drawable.wifi_off_24px),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.icon_wifi_off),
             modifier = Modifier.size(35.dp),
             tint = MaterialTheme.colorScheme.error
         )
         Text(
-            text = "No internet connection",
+            text = stringResource(R.string.no_internet_connection),
             fontSize = MaterialTheme.typography.titleMedium.fontSize
         )
         Button(
@@ -185,24 +184,7 @@ private fun ErrorLoadingMoreMovies(viewModel: MainViewModel = hiltViewModel()) {
             },
             modifier = Modifier.padding(5.dp)
         ) {
-            Text("Try again")
+            Text(stringResource(R.string.button_try_again_internet_connection))
         }
-    }
-}
-
-@Preview
-@Composable
-private fun TopBar() {
-    Row(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(20.dp)
-    ){
-        Text(
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            text = "My movies"
-        )
     }
 }

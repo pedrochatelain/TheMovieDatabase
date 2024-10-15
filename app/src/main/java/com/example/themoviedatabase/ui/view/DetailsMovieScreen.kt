@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -120,10 +121,10 @@ private fun TituloPelicula(titulo: String, tituloOriginal: String) {
 @Composable
 fun EmptyDetails() {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "No movie data", fontSize = MaterialTheme.typography.headlineMedium.fontSize)
+        Text(text = stringResource(R.string.empty_details_movie), fontSize = MaterialTheme.typography.headlineMedium.fontSize)
         Icon(
             modifier = Modifier.size(50.dp),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.content_description_icon_empty_details_movie),
             imageVector = Icons.Sharp.Clear,
             tint = MaterialTheme.colorScheme.error
         )
@@ -140,7 +141,7 @@ private fun FechaLanzamiento(fechaLanzamiento: String) {
                     .size(19.dp),
                 tint = MaterialTheme.colorScheme.primary,
                 imageVector = Icons.Sharp.DateRange,
-                contentDescription = ""
+                contentDescription = stringResource(R.string.daterange_icon)
             )
             Text(
                 text = fechaLanzamiento,
@@ -156,7 +157,7 @@ private fun FechaLanzamiento(fechaLanzamiento: String) {
 private fun Cast(actores: List<Actor>?) {
     if ( ! actores.isNullOrEmpty()) {
         Text(
-            text = "Cast",
+            text = stringResource(R.string.cast_title),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -184,12 +185,12 @@ private fun PictureMovie(image: ImageBitmap?) {
                     .fillMaxWidth(),
                 contentScale = ContentScale.FillBounds,
                 bitmap = image,
-                contentDescription = ""
+                contentDescription = stringResource(R.string.image_movie)
             )
         } else {
             Image(
                 painter = painterResource(R.drawable.placeholder),
-                "",
+                stringResource(R.string.null_image_movie),
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -208,7 +209,7 @@ private fun Rating(rating: Double) {
                 .size(20.dp),
             tint = Color.hsv(47f, .87f, .96f),
             imageVector = Icons.Sharp.Star,
-            contentDescription = ""
+            contentDescription = stringResource(R.string.icon_rating)
         )
         Text(
             text = "$rating",
@@ -216,7 +217,7 @@ private fun Rating(rating: Double) {
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
             fontWeight = FontWeight.Light
         )
-        Text(text = " / 10", fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Thin)
+        Text(text = stringResource(R.string.rating), fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Thin)
     }
 }
 
