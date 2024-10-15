@@ -19,7 +19,7 @@ import com.example.themoviedatabase.data.dto.Movie
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
-    ElevatedCard(onClick = { onMovieClick(movie.id) }, modifier = Modifier.padding(5.dp)) {
+    ElevatedCard(onClick = { onMovieClick(movie.id) }, modifier = Modifier.padding(start = 5.dp, end = 5.dp, bottom = 10.dp)) {
         ImagenPelicula(movie)
         TituloPelicula(movie)
         FechaLanzamiento(movie)

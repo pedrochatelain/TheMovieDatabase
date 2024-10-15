@@ -1,7 +1,9 @@
 package com.example.themoviedatabase.ui.view
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -9,13 +11,14 @@ import androidx.compose.material.icons.sharp.Clear
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -35,27 +38,33 @@ fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
         focusManager.clearFocus()
     }
 
-    OutlinedTextField(
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        shape = MaterialTheme.shapes.extraLarge,
-        modifier = Modifier
-            .focusRequester(focusRequester)
-            .padding(bottom = 20.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth(),
-        value = TextFieldValue(
-            text = viewModel.searchedMovie,
-            selection = TextRange(viewModel.searchedMovie.length)
-        ),
-        placeholder = { Text("Search movie") },
-        onValueChange = {
-            viewModel.cancelSearch()
-            viewModel.searchedMovie = it.text
-            viewModel.loadMovies()
-        },
-        leadingIcon = { Icon(Icons.Sharp.Search, "s") },
-        trailingIcon = { ButtonClearText() }
-    )
+    if(viewModel.isInitialized) {
+        OutlinedTextField(
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            shape = CircleShape,
+            modifier = Modifier
+                .height(70.dp)
+                .fillMaxWidth()
+                .focusRequester(focusRequester)
+                .padding(10.dp),
+            colors = TextFieldDefaults.colors(
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            value = TextFieldValue(
+                text = viewModel.searchedMovie,
+                selection = TextRange(viewModel.searchedMovie.length)
+            ),
+            placeholder = { Text("Search movie") },
+            onValueChange = {
+                viewModel.cancelSearch()
+                viewModel.searchedMovie = it.text
+                viewModel.loadMovies()
+            },
+            leadingIcon = { Icon(Icons.Sharp.Search, "s") },
+            trailingIcon = { ButtonClearText() }
+        )
+    }
 }
 
 @Composable

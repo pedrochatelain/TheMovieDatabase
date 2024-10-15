@@ -49,10 +49,9 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
     }
     Scaffold(
         floatingActionButton = { SearchButton() },
-        topBar = { TopBar() },
+        topBar = { BuscadorPeliculas() },
         content = { padding ->
             Column(Modifier.padding(padding)) {
-                BuscadorPeliculas()
                 when {
                     viewModel.loading     -> LoadingScreen()
                     viewModel.moviesReady -> ListOfMovies(onMovieClick)
@@ -68,11 +67,10 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
 private fun SearchButton(viewModel: MainViewModel = hiltViewModel()) {
     if (viewModel.isInitialized) {
         FloatingActionButton(
-            modifier = Modifier.size(65.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = { viewModel.focusSearchBox() },
-            content = { Icon(imageVector = Icons.Sharp.Search, "", modifier = Modifier.size(30.dp)) }
+            content = { Icon(imageVector = Icons.Sharp.Search, "") }
         )
     }
 }
@@ -116,7 +114,8 @@ private fun ListOfMovies(
         LocalOverscrollConfiguration provides null
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 128.dp)
+            modifier = Modifier.padding(start = 5.dp, end = 5.dp),
+            columns = GridCells.Adaptive(150.dp),
         ) {
             items(items = viewModel.movies) { movie ->
                 CardMovie(movie, onMovieClick)
