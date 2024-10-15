@@ -3,6 +3,7 @@ package com.example.themoviedatabase.data
 import com.example.themoviedatabase.data.datasource.MoviesDataSource
 import com.example.themoviedatabase.data.dto.Actor
 import com.example.themoviedatabase.data.dto.DetailsMovie
+import com.example.themoviedatabase.data.dto.ResponseGetDetailsMovie
 import com.example.themoviedatabase.data.dto.ResponseGetMovies
 import com.example.themoviedatabase.data.dto.api.ActorsAPI
 import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
@@ -58,12 +59,18 @@ class Repository @Inject constructor(private val dataSource: MoviesDataSource)  
         return ResponseGetMovies(httpCode = 500, isSuccessful = false)
     }
 
-    suspend fun getMovieDetails(id: Int): DetailsMovie? {
-        val response: Response<DetailsMovieAPI> = dataSource.getMovieDetails(id)
-        if (response.isSuccessful) {
-            return DetailsMovie(response.body()!!)
-        }
-        return null
+    suspend fun getMovieDetails(id: Int): ResponseGetDetailsMovie {
+        try {
+            val result: Response<DetailsMovieAPI> = dataSource.getMovieDetails(id)
+            if (result.isSuccessful) {
+                return ResponseGetDetailsMovie(
+                    movie = DetailsMovie(result.body()!!),
+                    httpCode = 200,
+                    isSuccessful = true
+                )
+            }
+        } catch (_: Throwable) {}
+        return ResponseGetDetailsMovie(httpCode = 500, isSuccessful = false)
     }
 
     suspend fun getActors(movieID: Int): List<Actor> {

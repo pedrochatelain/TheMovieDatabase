@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.themoviedatabase.data.Repository
 import com.example.themoviedatabase.data.dto.Actor
-import com.example.themoviedatabase.data.dto.DetailsMovie
+import com.example.themoviedatabase.data.dto.ResponseGetDetailsMovie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,9 +23,11 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsMovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+    var errorDetailsMovie by mutableStateOf(false)
+    var successDetailsMovie by mutableStateOf(false)
     private var isMovieSelected: Boolean = false
     var isLoading by mutableStateOf(true)
-    var details by mutableStateOf<DetailsMovie?>(null)
+    lateinit var details: ResponseGetDetailsMovie
 
     private fun loadDetails(id: Int): Job {
         return viewModelScope.launch {
@@ -36,7 +38,7 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
     private fun loadActors(movieID: Int): Job {
         return viewModelScope.launch {
             val response: List<Actor> = repository.getActors(movieID)
-            details?.actores?.addAll(response)
+            details.movie!!.actores.addAll(response)
         }
     }
 
@@ -46,7 +48,7 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
                 val url = URL("https://image.tmdb.org/t/p/original/${poster}")
                 try {
                     val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                    details?.image = bitmap.asImageBitmap()
+                    details.movie!!.image = bitmap.asImageBitmap()
                 } catch (_: FileNotFoundException){}
             }
         }
@@ -55,11 +57,18 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
     fun loadMovie(id: Int) {
         if ( ! isMovieSelected) { // flag to protect simultaneous taps on movies
             isMovieSelected = true
+            isLoading = true
             viewModelScope.launch {
                 loadDetails(id).join()
-                loadImage(details?.portada).join()
-                loadActors(id).join()
+                if (details.isSuccessful) {
+                    loadImage(details.movie!!.portada).join()
+                    loadActors(id).join()
+                    successDetailsMovie = true
+                } else {
+                    errorDetailsMovie = true
+                }
                 isLoading = false
+                isMovieSelected = false
             }
         }
     }
