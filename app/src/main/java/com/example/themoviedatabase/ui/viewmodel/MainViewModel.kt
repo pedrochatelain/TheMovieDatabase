@@ -47,7 +47,10 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
                 movies.addAll(response.movies)
                 checkResults()
             }
-            else error = true
+            else {
+                error = true
+                moviesReady = false
+            }
             loading = false
         }
         return search
