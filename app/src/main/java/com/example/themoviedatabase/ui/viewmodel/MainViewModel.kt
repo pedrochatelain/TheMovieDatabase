@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.themoviedatabase.data.Repository
 import com.example.themoviedatabase.data.dto.Movie
+import com.example.themoviedatabase.data.dto.ResponseGetMovies
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -72,13 +73,21 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
             isLoadingMoreMovies = true
             val response = repository.getMoreMovies(searchedMovie, ++page)
             if (response.isSuccessful) {
-                movies.addAll(response.movies)
+                updateMovieList(response)
                 errorLoadMoreMovies = false
             } else {
                 errorLoadMoreMovies = true
                 --page
             }
             isLoadingMoreMovies = false
+        }
+    }
+
+    // checks duplicate movies
+    private fun updateMovieList(response: ResponseGetMovies) {
+        for (movie in response.movies) {
+            if (!movies.contains(movie))
+                movies.add(movie)
         }
     }
 
