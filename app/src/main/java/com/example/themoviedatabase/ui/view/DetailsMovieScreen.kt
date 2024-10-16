@@ -45,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.themoviedatabase.R
@@ -82,7 +81,7 @@ fun ScreenErrorDetails(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
             modifier = Modifier.size(60.dp),
             tint = MaterialTheme.colorScheme.error
         )
-        Text(stringResource(R.string.no_internet_connection), fontSize = 20.sp, modifier = Modifier.padding(top = 10.dp))
+        Text(stringResource(R.string.no_internet_connection), fontSize = MaterialTheme.typography.titleLarge.fontSize, modifier = Modifier.padding(top = 10.dp))
         Button(
             onClick = {
                 viewModel.loadMovie(idMovie)
@@ -121,7 +120,7 @@ private fun Resumen(resumen: String?) {
         Text(
             text = resumen,
             modifier = Modifier.padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
-            fontSize = 18.sp
+            fontSize = MaterialTheme.typography.bodyLarge.fontSize
         )
     }
 }
@@ -130,14 +129,14 @@ private fun Resumen(resumen: String?) {
 private fun TituloPelicula(titulo: String, tituloOriginal: String) {
     Text(
         text = tituloOriginal,
-        fontSize = 26.sp,
+        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp)
     )
     if (tituloOriginal != titulo) {
         Text(
             text = titulo,
-            fontSize = 20.sp,
+            fontSize = MaterialTheme.typography.titleLarge.fontSize,
             fontWeight = FontWeight.Light,
             modifier = Modifier.padding(start = 20.dp, end = 20.dp)
         )
@@ -172,7 +171,7 @@ private fun FechaLanzamiento(fechaLanzamiento: String) {
             Text(
                 text = fechaLanzamiento,
                 modifier = Modifier.padding(start = 6.dp),
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                 fontWeight = FontWeight.Light
             )
         }
@@ -184,7 +183,7 @@ private fun Cast(actores: List<Actor>?) {
     if ( ! actores.isNullOrEmpty()) {
         Text(
             text = stringResource(R.string.cast_title),
-            fontSize = 20.sp,
+            fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
              .padding(top = 40.dp, bottom = 10.dp)
@@ -240,10 +239,10 @@ private fun Rating(rating: Double) {
         Text(
             text = "$rating",
             modifier = Modifier.padding(start = 6.dp),
-            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+            fontSize = MaterialTheme.typography.labelLarge.fontSize,
             fontWeight = FontWeight.Light
         )
-        Text(text = stringResource(R.string.rating), fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Thin)
+        Text(text = stringResource(R.string.rating), fontSize = MaterialTheme.typography.labelLarge.fontSize, fontWeight = FontWeight.Thin)
     }
 }
 
@@ -263,7 +262,7 @@ private fun Genres(generos: List<Genero>) {
                 Text(
                     text = genero.toString(),
                     fontWeight = FontWeight.Light,
-                    fontSize = 16.sp,
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
                     modifier = Modifier
                         .padding(4.dp)
                         .padding(start = 10.dp, end = 10.dp)

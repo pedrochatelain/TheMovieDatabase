@@ -11,6 +11,7 @@ import androidx.compose.material.icons.sharp.Clear
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -57,7 +58,7 @@ fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
                 text = viewModel.searchedMovie,
                 selection = TextRange(viewModel.searchedMovie.length)
             ),
-            placeholder = { Text(stringResource(R.string.placeholder_search_box)) },
+            placeholder = { Text(text = stringResource(R.string.placeholder_search_box), fontSize = MaterialTheme.typography.bodyMedium.fontSize) },
             onValueChange = {
                 viewModel.cancelSearch()
                 viewModel.searchedMovie = it.text

@@ -33,7 +33,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.themoviedatabase.R
 import com.example.themoviedatabase.ui.viewmodel.MainViewModel
@@ -154,7 +153,7 @@ private fun ErrorScreen(viewModel: MainViewModel = hiltViewModel()) {
             modifier = Modifier.size(60.dp),
             tint = MaterialTheme.colorScheme.error
         )
-        Text(stringResource(R.string.no_internet_connection), fontSize = 20.sp, modifier = Modifier.padding(top = 10.dp))
+        Text(stringResource(R.string.no_internet_connection), fontSize = MaterialTheme.typography.titleLarge.fontSize, modifier = Modifier.padding(top = 10.dp))
         Button(
             onClick = { viewModel.loadMovies() },
             modifier = Modifier.padding(top = 30.dp)

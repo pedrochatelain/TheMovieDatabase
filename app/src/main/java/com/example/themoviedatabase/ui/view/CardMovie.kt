@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.themoviedatabase.R
 import com.example.themoviedatabase.data.dto.Movie
@@ -30,7 +30,7 @@ fun CardMovie(movie: Movie, onMovieClick: (movieID: Int) -> Unit) {
 private fun TituloPelicula(movie: Movie) {
     Text(
         modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 2.dp),
-        fontSize = 16.sp,
+        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
         text = movie.title,
         fontWeight = FontWeight.Bold,
     )
@@ -54,7 +54,7 @@ private fun FechaLanzamiento(movie: Movie) {
     if ( ! movie.fechaLanzamiento.isNullOrBlank()) {
         Text(
             modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
-            fontSize = 14.sp,
+            fontSize = MaterialTheme.typography.bodySmall.fontSize,
             fontWeight = FontWeight.Light,
             text = movie.getAnioLanzamiento().toString()
         )
