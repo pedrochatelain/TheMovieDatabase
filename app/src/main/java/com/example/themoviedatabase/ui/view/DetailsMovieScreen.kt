@@ -62,14 +62,15 @@ fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
     Scaffold {
         when {
             viewModel.isLoading -> LoadingScreen()
-            viewModel.successDetailsMovie -> MovieDetails(viewModel.details.movie)
-            viewModel.errorDetailsMovie -> ScreenErrorDetails(idMovie)
+            viewModel.successDetailsMovie -> MovieDetails(viewModel.details.movie!!)
+            viewModel.errorConnection -> ScreenErrorConnection(idMovie)
+            viewModel.emptyDetails -> EmptyDetails()
         }
     }
 }
 
 @Composable
-fun ScreenErrorDetails(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
+fun ScreenErrorConnection(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,23 +95,19 @@ fun ScreenErrorDetails(idMovie: Int, viewModel: DetailsMovieViewModel = hiltView
 }
 
 @Composable
-private fun MovieDetails(movie: DetailsMovie?) {
-    if (movie == null) {
-        EmptyDetails()
-    } else {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 20.dp)
-        ) {
-            PictureMovie(movie.image)
-            TituloPelicula(movie.titulo, movie.titulo_original)
-            Rating(movie.rating)
-            FechaLanzamiento(movie.fecha_lanzamiento)
-            Resumen(movie.resumen)
-            Genres(movie.generos)
-            Cast(movie.actores)
-        }
+private fun MovieDetails(movie: DetailsMovie) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = 20.dp)
+    ) {
+        PictureMovie(movie.image)
+        TituloPelicula(movie.titulo, movie.titulo_original)
+        Rating(movie.rating)
+        FechaLanzamiento(movie.fecha_lanzamiento)
+        Resumen(movie.resumen)
+        Genres(movie.generos)
+        Cast(movie.actores)
     }
 }
 

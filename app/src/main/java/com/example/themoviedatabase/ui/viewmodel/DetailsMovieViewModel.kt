@@ -23,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsMovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    var errorDetailsMovie by mutableStateOf(false)
+    var emptyDetails by mutableStateOf(false)
+    var errorConnection by mutableStateOf(false)
     var successDetailsMovie by mutableStateOf(false)
     private var isMovieSelected: Boolean = false
     var isLoading by mutableStateOf(true)
@@ -64,8 +65,15 @@ class DetailsMovieViewModel @Inject constructor(private val repository: Reposito
                     loadImage(details.movie!!.portada).join()
                     loadActors(id).join()
                     successDetailsMovie = true
+                    errorConnection = false
                 } else {
-                    errorDetailsMovie = true
+                    if (details.errorConnection) {
+                        errorConnection = true
+                    }
+                    else {
+                        emptyDetails = true
+                        errorConnection = false
+                    }
                 }
                 isLoading = false
                 isMovieSelected = false

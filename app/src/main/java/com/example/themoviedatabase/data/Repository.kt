@@ -65,12 +65,24 @@ class Repository @Inject constructor(private val dataSource: MoviesDataSource)  
             if (result.isSuccessful) {
                 return ResponseGetDetailsMovie(
                     movie = DetailsMovie(result.body()!!),
-                    httpCode = 200,
-                    isSuccessful = true
+                    isSuccessful = true,
+                    errorConnection = false
                 )
             }
-        } catch (_: Throwable) {}
-        return ResponseGetDetailsMovie(httpCode = 500, isSuccessful = false)
+            else {
+                return ResponseGetDetailsMovie(
+                    movie = null,
+                    isSuccessful = false,
+                    errorConnection = false
+                )
+            }
+        } catch (_: Throwable) {
+            return ResponseGetDetailsMovie(
+                movie = null,
+                isSuccessful = false,
+                errorConnection = true
+            )
+        }
     }
 
     suspend fun getActors(movieID: Int): List<Actor> {
