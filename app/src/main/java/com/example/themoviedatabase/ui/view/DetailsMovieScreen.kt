@@ -214,9 +214,10 @@ private fun PictureMovie(image: ImageBitmap?) {
             )
         } else {
             Image(
-                painter = painterResource(R.drawable.placeholder),
-                stringResource(R.string.null_image_movie),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.height(220.dp).fillMaxWidth(),
+                contentScale = ContentScale.FillBounds,
+                painter = painterResource(R.drawable.empty_movie),
+                contentDescription = stringResource(R.string.null_image_movie),
             )
         }
     }
@@ -291,9 +292,10 @@ fun ActorCard(actor: Actor) {
         .padding(end = 20.dp)
     ){
         AsyncImage(
-            modifier = Modifier
+            modifier = Modifier.height(130.dp).fillMaxSize()
                 .clip(shape = RoundedCornerShape(10.dp)),
-            error = painterResource(R.drawable.placeholder),
+            error = painterResource(R.drawable.empty_actor_and_moviecard),
+            contentScale = ContentScale.FillBounds,
             placeholder = painterResource(R.drawable.placeholder),
             model = "https://image.tmdb.org/t/p/w500/${actor.foto}",
             contentDescription = null,
