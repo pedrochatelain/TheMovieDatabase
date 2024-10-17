@@ -63,25 +63,12 @@ class Repository @Inject constructor(private val dataSource: MoviesDataSource)  
         try {
             val result: Response<DetailsMovieAPI> = dataSource.getMovieDetails(id)
             if (result.isSuccessful) {
-                return ResponseGetDetailsMovie(
-                    movie = DetailsMovie(result.body()!!),
-                    isSuccessful = true,
-                    errorConnection = false
-                )
+                val movie = DetailsMovie(result.body()!!)
+                return ResponseGetDetailsMovie.success(movie)
             }
-            else {
-                return ResponseGetDetailsMovie(
-                    movie = null,
-                    isSuccessful = false,
-                    errorConnection = false
-                )
-            }
-        } catch (_: Throwable) {
-            return ResponseGetDetailsMovie(
-                movie = null,
-                isSuccessful = false,
-                errorConnection = true
-            )
+            return ResponseGetDetailsMovie.failure()
+        } catch (error: Throwable) {
+            return ResponseGetDetailsMovie.errorNetwork()
         }
     }
 
