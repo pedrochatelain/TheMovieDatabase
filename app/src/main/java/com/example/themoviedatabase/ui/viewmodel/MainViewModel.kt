@@ -71,7 +71,7 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     fun loadMoreMovies() {
         viewModelScope.launch {
             isLoadingMoreMovies = true
-            val response = repository.getMoreMovies(searchedMovie, ++page)
+            val response = repository.getMovies(searchedMovie, ++page)
             if (response.isSuccessful) {
                 updateMovieList(response)
                 errorLoadMoreMovies = false

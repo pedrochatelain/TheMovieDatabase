@@ -13,41 +13,9 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(private val dataSource: MoviesDataSource)  {
 
-    suspend fun getMovies(title: String = ""): ResponseGetMovies {
+    suspend fun getMovies(title: String = "", page: Int = 1): ResponseGetMovies {
         try {
-            val result: Response<MovieAPI> = dataSource.getMovies(title)
-            if (result.isSuccessful) {
-                return ResponseGetMovies(
-                    movies = result.body()!!.movies,
-                    httpCode = 200,
-                    isSuccessful = true
-                )
-            }
-        } catch (_: Throwable) {}
-        return ResponseGetMovies(httpCode = 500, isSuccessful = false)
-    }
-
-    suspend fun getMoreMovies(movieTitle: String, page: Int): ResponseGetMovies {
-        if (movieTitle.isNotBlank()) {
-            return searchMoreMovies(movieTitle, page)
-        } else {
-            try {
-                val result: Response<MovieAPI> = dataSource.getMoreMovies(page)
-                if (result.isSuccessful) {
-                    return ResponseGetMovies(
-                        movies = result.body()!!.movies,
-                        httpCode = 200,
-                        isSuccessful = true
-                    )
-                }
-            } catch (_: Throwable) {}
-            return ResponseGetMovies(httpCode = 500, isSuccessful = false)
-        }
-    }
-
-    suspend fun searchMoreMovies(movieTitle: String, page: Int): ResponseGetMovies {
-        try {
-            val result: Response<MovieAPI> = dataSource.searchMoreMovies(movieTitle, page)
+            val result: Response<MovieAPI> = dataSource.getMovies(title, page)
             if (result.isSuccessful) {
                 return ResponseGetMovies(
                     movies = result.body()!!.movies,

@@ -7,11 +7,7 @@ import retrofit2.Response
 
 interface MoviesDataSource {
 
-    suspend fun getMovies(titleMovie: String = ""): Response<MovieAPI>
-
-    suspend fun getMoreMovies(page: Int): Response<MovieAPI>
-
-    suspend fun searchMoreMovies(movieTitle: String, page: Int): Response<MovieAPI>
+    suspend fun getMovies(titleMovie: String = "", page: Int = 1): Response<MovieAPI>
 
     suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI>
 

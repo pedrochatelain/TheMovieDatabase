@@ -6,33 +6,23 @@ import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 import com.example.themoviedatabase.data.dto.api.MovieAPI
 import com.example.themoviedatabase.data.datasource.retrofit.service.DetailsMovieService
 import com.example.themoviedatabase.data.datasource.retrofit.service.MoviesService
-import com.example.themoviedatabase.data.datasource.retrofit.service.PopularMoviesService
 import com.example.themoviedatabase.data.datasource.retrofit.service.SearchService
 import com.example.themoviedatabase.data.datasource.retrofit.service.ActorsService
 import retrofit2.Response
 
 class Retrofit(
-    private val popularMoviesService: PopularMoviesService = PopularMoviesService(),
     private val moviesService: MoviesService = MoviesService(),
     private val searchService: SearchService = SearchService(),
     private val detailsMovieService: DetailsMovieService = DetailsMovieService(),
     private val actorsMovieService: ActorsService = ActorsService()
 ): MoviesDataSource {
 
-    override suspend fun getMovies(titleMovie: String): Response<MovieAPI> {
+    override suspend fun getMovies(titleMovie: String, page: Int): Response<MovieAPI> {
         return if (titleMovie.isBlank()) {
-            popularMoviesService.getPopularMovies()
+            moviesService.getMovies(page)
         } else {
-            searchService.search(titleMovie)
+            searchService.search(titleMovie, page)
         }
-    }
-
-    override suspend fun getMoreMovies(page: Int): Response<MovieAPI> {
-        return moviesService.getMovies(page)
-    }
-
-    override suspend fun searchMoreMovies(movieTitle: String, page: Int): Response<MovieAPI> {
-        return searchService.search(movieTitle, page)
     }
 
     override suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI> {
