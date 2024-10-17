@@ -2,7 +2,6 @@ package com.example.themoviedatabase.ui.view
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,8 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.themoviedatabase.R
 import com.example.themoviedatabase.data.dto.Actor
 import com.example.themoviedatabase.data.dto.DetailsMovie
@@ -101,7 +101,7 @@ private fun MovieDetails(movie: DetailsMovie) {
             .verticalScroll(rememberScrollState())
             .padding(bottom = 20.dp)
     ) {
-        PictureMovie(movie.image)
+        PictureMovie(movie.portada)
         TituloPelicula(movie.titulo, movie.titulo_original)
         Rating(movie.rating)
         FechaLanzamiento(movie.fecha_lanzamiento)
@@ -198,26 +198,18 @@ private fun Cast(actores: List<Actor>?) {
 }
 
 @Composable
-private fun PictureMovie(image: ImageBitmap?) {
-    Box(modifier = Modifier.padding(bottom = 30.dp)){
-        if (image != null) {
-            Image(
-                modifier = Modifier
-                    .height(220.dp)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.FillBounds,
-                bitmap = image,
-                contentDescription = stringResource(R.string.image_movie)
-            )
-        } else {
-            Image(
-                modifier = Modifier.height(220.dp).fillMaxWidth(),
-                contentScale = ContentScale.FillBounds,
-                painter = painterResource(R.drawable.empty_movie),
-                contentDescription = stringResource(R.string.null_image_movie),
-            )
-        }
-    }
+private fun PictureMovie(poster: String?) {
+    AsyncImage(
+        modifier = Modifier.height(250.dp).padding(bottom = 20.dp),
+        model = ImageRequest.Builder(LocalContext.current)
+            .data( "https://image.tmdb.org/t/p/original/${poster}")
+            .crossfade(true)
+            .build(),
+        contentDescription = stringResource(R.string.image_movie),
+        placeholder = painterResource(R.drawable.placeholder_details_movie),
+        error = painterResource(R.drawable.empty_movie),
+        contentScale = ContentScale.FillBounds
+    )
 }
 
 @Composable
