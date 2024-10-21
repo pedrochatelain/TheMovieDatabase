@@ -1,5 +1,6 @@
 package com.example.themoviedatabase.data.dto
 
+import com.example.themoviedatabase.data.datasource.BASE_URL_IMAGE_CARD_MOVIE
 import com.google.gson.annotations.SerializedName
 
 data class Movie(
@@ -7,11 +8,15 @@ data class Movie(
     @SerializedName("original_language") val originalLanguage: String,
     @SerializedName("original_title") val originalTitle: String,
     @SerializedName("title") val title: String,
-    @SerializedName("poster_path") val image: String,
+    @SerializedName("poster_path") private val image: String,
     @SerializedName("release_date") val fechaLanzamiento: String?
 ){
     override fun toString(): String {
         return "Language: $originalLanguage - Original title: $originalTitle"
+    }
+
+    fun imageURL(): String {
+        return "$BASE_URL_IMAGE_CARD_MOVIE$image"
     }
 
     fun getAnioLanzamiento(): Int {

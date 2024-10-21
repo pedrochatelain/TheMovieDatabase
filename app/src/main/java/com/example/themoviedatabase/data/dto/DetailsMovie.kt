@@ -1,12 +1,13 @@
 package com.example.themoviedatabase.data.dto
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.example.themoviedatabase.data.datasource.BASE_URL_IMAGE_DETAILS_MOVIE
 import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 
 data class DetailsMovie(
     val titulo_original: String,
     val titulo: String,
-    val portada: String?,
+    private val portada: String?,
     val resumen: String,
     val generos: List<Genero>,
     var actores: MutableList<Actor>,
@@ -25,4 +26,9 @@ data class DetailsMovie(
         details.fecha_lanzamiento,
         null
     )
+
+    fun imageURL(): String {
+        return "$BASE_URL_IMAGE_DETAILS_MOVIE$portada"
+    }
+
 }

@@ -51,7 +51,7 @@ private fun ImagenPelicula(movie: Movie) {
             contentScale = ContentScale.FillBounds,
             placeholder = painterResource(R.drawable.placeholder),
             model = ImageRequest.Builder(LocalContext.current)
-                .data("https://image.tmdb.org/t/p/w500/${movie.image}")
+                .data(movie.imageURL())
                 .crossfade(true)
                 .build(),
             contentDescription = null,

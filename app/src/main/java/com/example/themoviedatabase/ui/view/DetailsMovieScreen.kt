@@ -101,7 +101,7 @@ private fun MovieDetails(movie: DetailsMovie) {
             .verticalScroll(rememberScrollState())
             .padding(bottom = 20.dp)
     ) {
-        PictureMovie(movie.portada)
+        PictureMovie(movie.imageURL())
         TituloPelicula(movie.titulo, movie.titulo_original)
         Rating(movie.rating)
         FechaLanzamiento(movie.fecha_lanzamiento)
@@ -198,11 +198,11 @@ private fun Cast(actores: List<Actor>?) {
 }
 
 @Composable
-private fun PictureMovie(poster: String?) {
+private fun PictureMovie(poster: String) {
     AsyncImage(
         modifier = Modifier.height(250.dp).padding(bottom = 20.dp),
         model = ImageRequest.Builder(LocalContext.current)
-            .data( "https://image.tmdb.org/t/p/original/${poster}")
+            .data(poster)
             .crossfade(true)
             .build(),
         contentDescription = stringResource(R.string.image_movie),
