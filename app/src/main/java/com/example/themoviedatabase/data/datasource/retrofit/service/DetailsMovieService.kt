@@ -1,30 +1,25 @@
 package com.example.themoviedatabase.data.datasource.retrofit.service
 
+import com.example.themoviedatabase.data.datasource.API_KEY
+import com.example.themoviedatabase.data.datasource.BASE_URL
 import com.example.themoviedatabase.data.dto.api.DetailsMovieAPI
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.Url
+import javax.inject.Inject
 
-class DetailsMovieService {
+class DetailsMovieService @Inject constructor(retrofit: Retrofit) {
 
     interface DetailsMovieService {
-        @GET("{id}")
-        suspend fun getDetailsMovie(@Path("id") id: Int, @Query("api_key") apiKey: String): Response<DetailsMovieAPI>
+        @GET
+        suspend fun getDetailsMovie(@Url url: String): Response<DetailsMovieAPI>
     }
-
-    private val API_KEY: String = "7cfd73ddaed83f34b0dfc2d546213e40"
-
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/movie/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
 
     private val service = retrofit.create(DetailsMovieService::class.java)
 
     suspend fun getMovieDetails(id: Int): Response<DetailsMovieAPI> {
-        return service.getDetailsMovie(id, API_KEY)
+        val url = "$BASE_URL$id?api_key=$API_KEY"
+        return service.getDetailsMovie(url)
     }
 }

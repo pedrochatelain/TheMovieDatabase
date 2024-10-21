@@ -9,12 +9,13 @@ import com.example.themoviedatabase.data.datasource.retrofit.service.MoviesServi
 import com.example.themoviedatabase.data.datasource.retrofit.service.SearchService
 import com.example.themoviedatabase.data.datasource.retrofit.service.ActorsService
 import retrofit2.Response
+import javax.inject.Inject
 
-class Retrofit(
-    private val moviesService: MoviesService = MoviesService(),
-    private val searchService: SearchService = SearchService(),
-    private val detailsMovieService: DetailsMovieService = DetailsMovieService(),
-    private val actorsMovieService: ActorsService = ActorsService()
+class RetrofitDataSource @Inject constructor (
+    private val moviesService: MoviesService,
+    private val searchService: SearchService,
+    private val detailsMovieService: DetailsMovieService,
+    private val actorsMovieService: ActorsService
 ): MoviesDataSource {
 
     override suspend fun getMovies(titleMovie: String, page: Int): Response<MovieAPI> {
