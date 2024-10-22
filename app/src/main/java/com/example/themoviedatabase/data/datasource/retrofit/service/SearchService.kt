@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Url
+import java.util.Locale
 import javax.inject.Inject
 
 class SearchService @Inject constructor(retrofit: Retrofit) {
@@ -19,7 +20,8 @@ class SearchService @Inject constructor(retrofit: Retrofit) {
     private val service = retrofit.create(SearchService::class.java)
 
     suspend fun search(titleMovie: String, page: Int): Response<MovieAPI> {
-        val url = "${SEARCH_URL}movie?api_key=$API_KEY&query=$titleMovie&page=$page"
+        val language = Locale.getDefault().toLanguageTag()
+        val url = "${SEARCH_URL}movie?api_key=$API_KEY&query=$titleMovie&page=$page&language=$language"
         return service.search(url)
     }
 

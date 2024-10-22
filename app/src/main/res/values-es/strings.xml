@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">The Movie Database</string>
+    <string name="placeholder_search_box">Buscar película</string>
+    <string name="content_description_icon_search">ícono de búsqueda</string>
+    <string name="content_description_icon_clear_searchbox">ícono borrar búsqueda</string>
+    <string name="empty_details_movie">La película no contiene datos</string>
+    <string name="content_description_icon_empty_details_movie">No se encontraron detalles</string>
+    <string name="daterange_icon">ícono fecha de lanzamiento</string>
+    <string name="cast_title">Reparto</string>
+    <string name="image_movie">imagen de la película</string>
+    <string name="null_image_movie">null imagen de la película</string>
+    <string name="icon_rating">icono de rating</string>
+    <string name="rating">" / 10"</string>
+    <string name="content_description_image_not_found_movie">No se encontró película</string>
+    <string name="no_results_found">No se encontraron resultados</string>
+    <string name="button_back_to_popular_movies">Volver a películas</string>
+    <string name="icon_wifi_off">ícono wifi off</string>
+    <string name="no_internet_connection">No hay conexión a internet</string>
+    <string name="button_try_again_internet_connection">Reintentar</string>
+</resources>

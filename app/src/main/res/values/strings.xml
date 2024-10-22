@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">The Movie Database</string>
-    <string name="text_button">Tap me!</string>
-    <string name="text_tap_counter">You\'ve tapped the button 0 times</string>
     <string name="placeholder_search_box">Search movie</string>
     <string name="content_description_icon_search">search icon</string>
     <string name="content_description_icon_clear_searchbox">icon clear searchbox\n</string>
