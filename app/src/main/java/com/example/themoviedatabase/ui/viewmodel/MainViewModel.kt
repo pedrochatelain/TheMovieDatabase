@@ -32,29 +32,28 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
     var noResults by mutableStateOf(false)
     val focusRequester = FocusRequester()
 
-    fun initialize() {
-        viewModelScope.launch {
-            loadMovies().join()
-            isInitialized = true
+    init {
+        loadMovies()
+    }
+
+    fun loadMovies() {
+        loading = true
+        search = viewModelScope.launch {
+            val response = repository.getMovies(searchedMovie)
+            movies.addAll(response.movies)
+            updateScreen(response)
         }
     }
 
-    fun loadMovies(): Job {
-        search = viewModelScope.launch {
-            loading = true
-            val response = repository.getMovies(searchedMovie)
-            if (response.isSuccessful) {
-                movies = SnapshotStateList()
-                movies.addAll(response.movies)
-                checkResults()
-            }
-            else {
-                error = true
-                moviesReady = false
-            }
-            loading = false
+    private fun updateScreen(response: ResponseGetMovies) {
+        if (response.isSuccessful) {
+            checkResults()
+        } else {
+            error = true
+            moviesReady = false
         }
-        return search
+        loading = false
+        isInitialized = true
     }
 
     private fun checkResults() {
@@ -91,17 +90,29 @@ class MainViewModel @Inject constructor(private val repository: Repository): Vie
         }
     }
 
-    fun cancelSearch() {
+    private fun cancelSearch() {
         if (search.isActive) search.cancel()
     }
 
     fun backToPopularMovies() {
+        clearListMovies()
         searchedMovie = ""
         loadMovies()
     }
 
     fun focusSearchBox() {
         focusRequester.requestFocus()
+    }
+
+    private fun clearListMovies() {
+        movies = SnapshotStateList()
+    }
+
+    fun search(movie: String) {
+        cancelSearch()
+        clearListMovies()
+        searchedMovie = movie
+        loadMovies()
     }
 
 }

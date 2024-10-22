@@ -39,12 +39,6 @@ import com.example.themoviedatabase.ui.viewmodel.MainViewModel
 
 @Composable
 fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
-    // init screen
-    LaunchedEffect(Unit) {
-        if ( ! viewModel.isInitialized) {
-            viewModel.initialize()
-        }
-    }
     Scaffold(
         floatingActionButton = { SearchButton() },
         topBar = { BuscadorPeliculas() },

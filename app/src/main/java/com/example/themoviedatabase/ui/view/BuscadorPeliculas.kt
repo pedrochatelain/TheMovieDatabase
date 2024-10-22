@@ -59,11 +59,7 @@ fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
                 selection = TextRange(viewModel.searchedMovie.length)
             ),
             placeholder = { Text(text = stringResource(R.string.placeholder_search_box), fontSize = MaterialTheme.typography.bodyMedium.fontSize) },
-            onValueChange = {
-                viewModel.cancelSearch()
-                viewModel.searchedMovie = it.text
-                viewModel.loadMovies()
-            },
+            onValueChange = { viewModel.search(it.text) },
             leadingIcon = { Icon(Icons.Sharp.Search, stringResource(R.string.content_description_icon_search) ) },
             trailingIcon = { ButtonClearText() }
         )
@@ -76,10 +72,7 @@ private fun ButtonClearText(viewModel: MainViewModel = hiltViewModel()) {
         IconButton(
             modifier = Modifier.padding(end = 10.dp),
             content = { Icon(imageVector = Icons.Sharp.Clear, stringResource(R.string.content_description_icon_clear_searchbox)) },
-            onClick = {
-                viewModel.searchedMovie = ""
-                viewModel.loadMovies()
-            }
+            onClick = { viewModel.backToPopularMovies() }
         )
     }
 }
