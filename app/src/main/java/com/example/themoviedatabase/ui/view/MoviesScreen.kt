@@ -1,5 +1,6 @@
 package com.example.themoviedatabase.ui.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -52,6 +53,10 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
                 }
             }
         }
+    )
+    BackHandler(
+        enabled = viewModel.searchedMovie.isNotBlank(),
+        onBack = { viewModel.backToPopularMovies() }
     )
 }
 
