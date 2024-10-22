@@ -32,6 +32,7 @@ class Repository @Inject constructor(private val dataSource: MoviesDataSource)  
             val result: Response<DetailsMovieAPI> = dataSource.getMovieDetails(id)
             if (result.isSuccessful) {
                 val movie = DetailsMovie(result.body()!!)
+                movie.actores.addAll(getActors(id))
                 return ResponseGetDetailsMovie.success(movie)
             }
             return ResponseGetDetailsMovie.failure()
@@ -40,7 +41,7 @@ class Repository @Inject constructor(private val dataSource: MoviesDataSource)  
         }
     }
 
-    suspend fun getActors(movieID: Int): List<Actor> {
+    private suspend fun getActors(movieID: Int): List<Actor> {
         val response: Response<ActorsAPI> = dataSource.getActors(movieID)
         if (response.isSuccessful) {
             return response.body()!!.actores

@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import androidx.navigation.toRoute
 import com.example.themoviedatabase.ui.view.MoviesScreen
 import kotlinx.serialization.Serializable
 
@@ -27,9 +26,8 @@ fun MyAppNavHost(
                 )
             })
         }
-        composable<MovieDetailRoute> { entry ->
-            val movie = entry.toRoute<MovieDetailRoute>()
-            DetailsMovieScreen(movie.id)
+        composable<MovieDetailRoute> {
+            DetailsMovieScreen()
         }
     }
 }

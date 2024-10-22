@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,15 +54,13 @@ import com.example.themoviedatabase.ui.viewmodel.DetailsMovieViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailsMovieScreen(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
-    // initialize view
-    LaunchedEffect(Unit) { viewModel.loadMovie(idMovie) }
+fun DetailsMovieScreen(viewModel: DetailsMovieViewModel = hiltViewModel()) {
 
     Scaffold {
         when {
             viewModel.isLoading -> LoadingScreen()
             viewModel.successDetailsMovie -> MovieDetails(viewModel.details.movie!!)
-            viewModel.errorConnection -> ScreenErrorConnection(idMovie)
+            viewModel.errorConnection -> ScreenErrorConnection(viewModel.movieDetailRoute.id)
             viewModel.emptyDetails -> EmptyDetails()
         }
     }
