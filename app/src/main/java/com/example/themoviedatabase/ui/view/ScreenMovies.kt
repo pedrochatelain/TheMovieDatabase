@@ -36,20 +36,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.themoviedatabase.R
-import com.example.themoviedatabase.ui.viewmodel.MainViewModel
+import com.example.themoviedatabase.ui.viewmodel.MoviesViewModel
 
 @Composable
-fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
+fun ScreenMovies(viewModel: MoviesViewModel = hiltViewModel(), onMovieClick: (movieID: Int) -> Unit) {
     Scaffold(
         floatingActionButton = { SearchButton() },
-        topBar = { BuscadorPeliculas() },
+        topBar = { SearchBox() },
         content = { padding ->
             Column(Modifier.padding(padding)) {
                 when {
-                    viewModel.loading     -> LoadingScreen()
+                    viewModel.loading     -> Loading()
                     viewModel.moviesReady -> ListOfMovies(onMovieClick)
                     viewModel.noResults   -> NoResultsSearch()
-                    viewModel.error       -> ErrorScreen()
+                    viewModel.error       -> ErrorConnection { viewModel.loadMovies() }
                 }
             }
         }
@@ -61,7 +61,7 @@ fun MoviesScreen(viewModel: MainViewModel = hiltViewModel(), onMovieClick: (movi
 }
 
 @Composable
-private fun SearchButton(viewModel: MainViewModel = hiltViewModel()) {
+private fun SearchButton(viewModel: MoviesViewModel = hiltViewModel()) {
     if (viewModel.isInitialized) {
         FloatingActionButton(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -73,7 +73,7 @@ private fun SearchButton(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun NoResultsSearch(viewModel: MainViewModel = hiltViewModel()) {
+private fun NoResultsSearch(viewModel: MoviesViewModel = hiltViewModel()) {
     Column(modifier = Modifier.fillMaxSize().padding(top = 40.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top) {
         Image(
             painter = painterResource(R.drawable.movie_no_results),
@@ -90,22 +90,11 @@ private fun NoResultsSearch(viewModel: MainViewModel = hiltViewModel()) {
     }
 }
 
-@Composable
-private fun LoadingScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ListOfMovies(
     onMovieClick: (movieID: Int) -> Unit,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MoviesViewModel = hiltViewModel()
 ) {
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
@@ -140,30 +129,7 @@ private fun ListOfMovies(
 }
 
 @Composable
-private fun ErrorScreen(viewModel: MainViewModel = hiltViewModel()) {
-    Column(
-      modifier = Modifier.fillMaxSize(),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.wifi_off_24px),
-            contentDescription = stringResource(R.string.icon_wifi_off),
-            modifier = Modifier.size(60.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Text(stringResource(R.string.no_internet_connection), fontSize = MaterialTheme.typography.titleLarge.fontSize, modifier = Modifier.padding(top = 10.dp))
-        Button(
-            onClick = { viewModel.loadMovies() },
-            modifier = Modifier.padding(top = 30.dp)
-        ) {
-            Text(stringResource(R.string.button_try_again_internet_connection))
-        }
-    }
-}
-
-@Composable
-private fun ErrorLoadingMoreMovies(viewModel: MainViewModel = hiltViewModel()) {
+private fun ErrorLoadingMoreMovies(viewModel: MoviesViewModel = hiltViewModel()) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             painter = painterResource(R.drawable.wifi_off_24px),

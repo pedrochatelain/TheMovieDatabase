@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ModuleContainer {
+class DependencyHolder {
 
     @Provides
     fun provideRepository(dataSource: RetrofitDataSource): Repository {
@@ -19,7 +19,7 @@ class ModuleContainer {
     }
 
     @Provides
-    fun retrofitBuilder(): Retrofit {
+    fun provideRetrofitBuilder(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,8 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Clear
 import androidx.compose.material.icons.sharp.DateRange
 import androidx.compose.material.icons.sharp.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -54,39 +49,13 @@ import com.example.themoviedatabase.ui.viewmodel.DetailsMovieViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailsMovieScreen(viewModel: DetailsMovieViewModel = hiltViewModel()) {
-
+fun ScreenDetailsMovie(viewModel: DetailsMovieViewModel = hiltViewModel()) {
     Scaffold {
         when {
-            viewModel.isLoading -> LoadingScreen()
+            viewModel.isLoading -> Loading()
             viewModel.successDetailsMovie -> MovieDetails(viewModel.details.movie!!)
-            viewModel.errorConnection -> ScreenErrorConnection(viewModel.movieDetailRoute.id)
+            viewModel.errorConnection -> ErrorConnection { viewModel.loadMovie(viewModel.movieDetailRoute.id) }
             viewModel.emptyDetails -> EmptyDetails()
-        }
-    }
-}
-
-@Composable
-fun ScreenErrorConnection(idMovie: Int, viewModel: DetailsMovieViewModel = hiltViewModel()) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.wifi_off_24px),
-            contentDescription = stringResource(R.string.icon_wifi_off),
-            modifier = Modifier.size(60.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Text(stringResource(R.string.no_internet_connection), fontSize = MaterialTheme.typography.titleLarge.fontSize, modifier = Modifier.padding(top = 10.dp))
-        Button(
-            onClick = {
-                viewModel.loadMovie(idMovie)
-            },
-            modifier = Modifier.padding(top = 30.dp)
-        ) {
-            Text(stringResource(R.string.button_try_again_internet_connection))
         }
     }
 }
@@ -258,17 +227,6 @@ private fun Genres(generos: List<Genero>) {
         }
     })
 }
-
-@Composable
-@Preview
-private fun LoadingScreen() {
-    Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            CircularProgressIndicator()
-        }
-    }
-}
-
 
 @Composable
 fun ActorCard(actor: Actor) {

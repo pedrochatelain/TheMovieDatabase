@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.themoviedatabase.R
 import com.example.themoviedatabase.ui.keyboardAsState
-import com.example.themoviedatabase.ui.viewmodel.MainViewModel
+import com.example.themoviedatabase.ui.viewmodel.MoviesViewModel
 
 @Composable
-fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
+fun SearchBox(viewModel: MoviesViewModel = hiltViewModel()) {
     val focusManager = LocalFocusManager.current
     val isKeyboardOpen = keyboardAsState().value
     val focusRequester = remember { viewModel.focusRequester }
@@ -67,7 +67,7 @@ fun BuscadorPeliculas(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun ButtonClearText(viewModel: MainViewModel = hiltViewModel()) {
+private fun ButtonClearText(viewModel: MoviesViewModel = hiltViewModel()) {
     if (viewModel.searchedMovie.isNotBlank()) {
         IconButton(
             modifier = Modifier.padding(end = 10.dp),

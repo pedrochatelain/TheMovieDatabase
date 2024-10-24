@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+class MoviesViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
     private var search: Job = Job()
     private var page: Int = 1
